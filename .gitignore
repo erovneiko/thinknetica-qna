@@ -36,4 +36,3 @@ yarn-debug.log*
 .yarn-integrity
 /config/database.yml
 /.rubocop.yml
-/.idea/
