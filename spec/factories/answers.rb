@@ -5,5 +5,9 @@ FactoryBot.define do
     trait :invalid do
       body { nil }
     end
+
+    factory :answers_list do
+      sequence(:body) { |n| "Answer #{n}" }
+    end
   end
 end

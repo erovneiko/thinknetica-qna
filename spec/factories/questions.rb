@@ -6,5 +6,9 @@ FactoryBot.define do
     trait :invalid do
       title { nil }
     end
+
+    factory :questions_list do
+      sequence(:title) { |n| "Question #{n}" }
+    end
   end
 end

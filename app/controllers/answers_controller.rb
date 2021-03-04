@@ -1,4 +1,5 @@
 class AnswersController < ApplicationController
+  before_action :authenticate_user!
   before_action :find_question, only: [:create]
   before_action :find_answer, only: [:destroy]
 
@@ -14,6 +15,8 @@ class AnswersController < ApplicationController
   end
 
   def destroy
+    return head(:forbidden) unless current_user.author_of?(@answer)
+
     @answer.destroy
     redirect_to question_path(@answer.question), notice: 'Answer successfully deleted'
   end

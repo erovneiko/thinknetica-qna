@@ -3,13 +3,13 @@
 h1= @question.title
 p= @question.body
 
-- if @question.author == current_user
+- if current_user&.author_of?(@question)
   p= link_to 'Delete question', question_path(@question), method: :delete
 
 - if @question.answers.exists?
   - @question.answers.each do |answer|
     p= answer.body
-    - if answer.author == current_user
+    - if current_user&.author_of?(answer)
       p= link_to 'Delete answer', answer_path(answer), method: :delete
 
 - unless @answer.nil?

@@ -37,6 +37,8 @@ class QuestionsController < ApplicationController
   end
 
   def destroy
+    return head(:forbidden) unless current_user.author_of?(@question)
+
     @question.destroy
     redirect_to questions_path, notice: 'Question successfully deleted'
   end
