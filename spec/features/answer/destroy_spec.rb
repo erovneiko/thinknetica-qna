@@ -5,20 +5,24 @@ feature 'User can delete answer' do
   given!(:answer) { create(:answer, question: question, author: user1) }
 
   describe 'Authorized user' do
-    scenario 'tries to delete his answer' do
+    scenario 'Author tries to delete his answer' do
       sign_in(user1)
 
       visit question_path(question)
+
+      expect(page).to have_content 'Answer Body'
 
       click_on 'Delete answer'
 
       expect(page).to have_content 'Answer successfully deleted'
     end
 
-    scenario 'tries to delete foreign answer' do
+    scenario 'Not author tries to delete the answer' do
       sign_in(user2)
 
       visit question_path(question)
+
+      expect(page).to have_content 'Answer Body'
 
       expect(page).not_to have_content 'Delete answer'
     end

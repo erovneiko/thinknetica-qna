@@ -156,7 +156,7 @@ RSpec.describe QuestionsController, type: :controller do
 
   describe 'DELETE #destroy' do
     context 'Authorized user' do
-      context 'deletes his question' do
+      context 'Author' do
         before { login(user) }
 
         it 'deletes the question' do
@@ -170,7 +170,7 @@ RSpec.describe QuestionsController, type: :controller do
         end
       end
 
-      context 'deletes another question' do
+      context 'Not author' do
         let(:another_user) { create(:user) }
         before { login(another_user) }
 
