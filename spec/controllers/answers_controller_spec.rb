@@ -32,7 +32,7 @@ RSpec.describe AnswersController, type: :controller do
               question_id: question,
               answer: attributes_for(:answer, :invalid)
             }
-          end.to_not change(question.answers, :count)
+          end.to_not change(Answer, :count)
         end
 
         it 're-renders question\' show' do
@@ -49,7 +49,7 @@ RSpec.describe AnswersController, type: :controller do
             question_id: question,
             answer: attributes_for(:answer)
           }
-        end.to_not change(question.answers, :count)
+        end.to_not change(Answer, :count)
       end
 
       it 'redirects to login page' do

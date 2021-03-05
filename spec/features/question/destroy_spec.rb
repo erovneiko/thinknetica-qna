@@ -16,6 +16,8 @@ feature 'User can delete question' do
       click_on 'Delete question'
 
       expect(page).to have_content 'Question successfully deleted'
+      expect(page).not_to have_content 'Question Title'
+      expect(page).not_to have_content 'Question Body'
     end
 
     scenario 'Not author tries to delete the question' do
@@ -26,13 +28,13 @@ feature 'User can delete question' do
       expect(page).to have_content 'Question Title'
       expect(page).to have_content 'Question Body'
 
-      expect(page).not_to have_content 'Delete question'
+      expect(page).not_to have_link 'Delete question'
     end
   end
 
   scenario 'Unauthorized user tries to delete question' do
     visit question_path(question)
 
-    expect(page).not_to have_content 'Delete question'
+    expect(page).not_to have_link 'Delete question'
   end
 end
