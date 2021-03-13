@@ -1,27 +1,28 @@
 require 'rails_helper'
 
 RSpec.describe AnswersController, type: :controller do
-  let(:user) { create(:user) }
-  let(:question) { create(:question, author: user) }
-  let(:answer) { create(:answer, question: question, author: user) }
+  let(:user1) { create(:user) }
+  let(:user2) { create(:user) }
+  let(:question) { create(:question, author: user1) }
+  let(:answer) { create(:answer, question: question, author: user1) }
 
   describe 'POST #create' do
-    context 'Authorized user' do
-      before { login(user) }
+    context 'authorized user' do
+      before { login(user1) }
 
       context 'valid attributes' do
         it 'saves a new answer' do
           expect do
             post :create, params: {
               answer: attributes_for(:answer),
-              question_id: question,
-            }
+              question_id: question
+            }, format: :js
           end.to change(question.answers, :count).by(1)
         end
 
-        it 'redirects to question\'s show' do
-          post :create, params: { question_id: question, answer: attributes_for(:answer) }
-          expect(response).to redirect_to question
+        it 'renders ajax answer' do
+          post :create, params: { question_id: question, answer: attributes_for(:answer) }, format: :js
+          expect(response).to render_template :create
         end
       end
 
@@ -31,13 +32,13 @@ RSpec.describe AnswersController, type: :controller do
             post :create, params: {
               question_id: question,
               answer: attributes_for(:answer, :invalid)
-            }
+            }, format: :js
           end.to_not change(Answer, :count)
         end
 
-        it 're-renders question\' show' do
-          post :create, params: { question_id: question, answer: attributes_for(:answer, :invalid) }
-          expect(response).to render_template 'questions/show'
+        it 'renders ajax answer' do
+          post :create, params: { question_id: question, answer: attributes_for(:answer, :invalid) }, format: :js
+          expect(response).to render_template :create
         end
       end
     end
@@ -59,25 +60,70 @@ RSpec.describe AnswersController, type: :controller do
     end
   end
 
+  describe 'PATCH #update' do
+    context 'author' do
+      before { login(user1) }
+
+      context 'with valid attributes' do
+        it 'changes answer attributes' do
+          patch :update, params: { id: answer, answer: { body: 'Updated body' } }, format: :js
+          answer.reload
+          expect(answer.body).to eq 'Updated body'
+        end
+
+        it 'renders update view' do
+          patch :update, params: { id: answer, answer: { body: 'Updated body' } }, format: :js
+          expect(response).to render_template :update
+        end
+      end
+
+      context 'with invalid attributes' do
+        it 'does not change answer attributes' do
+          expect do
+            patch :update, params: { id: answer, answer: attributes_for(:answer, :invalid) }, format: :js
+          end.to_not change(answer, :body)
+        end
+
+        it 'renders update view' do
+          patch :update, params: { id: answer, answer: attributes_for(:answer, :invalid) }, format: :js
+          expect(response).to render_template :update
+        end
+      end
+    end
+
+    context 'non-author' do
+      before { login(user2) }
+      before { patch :update, params: { id: answer, answer: { body: 'Updated body' } }, format: :js }
+
+      it 'does not change answer' do
+        answer.reload
+        expect(answer.body).to eq 'Answer body'
+      end
+
+      it 'returns status forbidden' do
+        expect(response).to have_http_status(:forbidden)
+      end      
+    end
+  end
+
   describe 'DELETE #destroy' do
     context 'Authorized user' do
       context 'Author' do
-        before { login(user) }
+        before { login(user1) }
 
         it 'deletes the answer' do
           answer
-          expect { delete :destroy, params: { id: answer } }.to change(question.answers, :count).by(-1)
+          expect { delete :destroy, params: { id: answer }, format: :js }.to change(question.answers, :count).by(-1)
         end
 
-        it 'redirects to question' do
-          delete :destroy, params: { id: answer }
-          expect(response).to redirect_to question_path(question)
+        it 'renders ajax answer' do
+          delete :destroy, params: { id: answer }, format: :js
+          expect(response).to render_template :update
         end
       end
 
       context 'Not author' do
-        let(:another_user) { create(:user) }
-        before { login(another_user) }
+        before { login(user2) }
 
         it 'does not delete the answer' do
           answer
@@ -99,6 +145,55 @@ RSpec.describe AnswersController, type: :controller do
 
       it 'redirects to login page' do
         delete :destroy, params: { id: answer }
+        expect(response).to redirect_to new_user_session_path
+      end
+    end
+  end
+
+  describe 'PUT #best' do
+    context 'authorized user' do
+      context 'author of the question' do
+        before { login(user1) }
+        before { post :best, params: { id: answer }, format: :js }
+
+        it 'makes answer the best' do
+          question.reload
+          expect(question.best_answer).to eq answer
+        end
+
+        it 'assigns current question to @question' do
+          expect(assigns(:question)).to eq question
+        end
+
+        it 'renders ajax answer' do
+          expect(response).to render_template :update
+        end
+      end
+
+      context 'not author' do
+        before { login(user2) }
+        before { post :best, params: { id: answer }, format: :js }
+
+        it 'does not make answer the best' do
+          question.reload
+          expect(question.best_answer).to eq nil
+        end
+
+        it 'returns status forbidden' do
+          expect(response).to have_http_status(:forbidden)
+        end
+      end
+    end
+
+    context 'not authorized user' do
+      before { post :best, params: { id: answer } }
+
+      it 'does not make answer the best' do
+        question.reload
+        expect(question.best_answer).to eq nil
+      end
+
+      it 'redirects to login page' do
         expect(response).to redirect_to new_user_session_path
       end
     end

@@ -10,7 +10,7 @@ feature 'User can sign out the system' do
 
     expect(page).to have_content 'Signed in successfully.'
 
-    click_on 'Sign out'
+    click_on 'Exit'
 
     expect(page).to have_content 'Signed out successfully.'
   end
