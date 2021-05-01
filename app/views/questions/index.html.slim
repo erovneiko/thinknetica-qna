@@ -1,4 +1,14 @@
-- @questions.each do |question|
-  p= question.title
-p= link_to 'Ask question', new_question_path
-p= link_to 'Sign out', destroy_user_session_path, method: :delete
+.question-errors
+
+.questions
+  = render @questions
+
+p
+  - if user_signed_in?
+    = link_to 'Ask', new_question_path
+    = link_to 'Exit', destroy_user_session_path, method: :delete
+  - else
+    = link_to 'Login', new_user_session_path
+
+- if user_signed_in?
+  p= current_user.email

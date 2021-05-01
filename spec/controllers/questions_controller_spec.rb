@@ -1,11 +1,10 @@
-require 'rails_helper'
-
 RSpec.describe QuestionsController, type: :controller do
-  let(:user) { create(:user) }
-  let(:question) { create(:question, author: user) }
+  let(:user1) { create(:user) }
+  let(:user2) { create(:user) }
+  let(:question) { create(:question, author: user1) }
 
   describe 'GET #index' do
-    let(:questions) { create_list(:question, 3, author: user) }
+    let(:questions) { create_list(:question, 3, author: user1) }
 
     before { get :index }
 
@@ -19,8 +18,8 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'GET #show' do
-    describe 'Authorized user' do
-      before { login(user) }
+    context 'authorized user' do
+      before { login(user1) }
       before { get :show, params: { id: question } }
 
       it 'assigns the requested question to @question' do
@@ -33,7 +32,7 @@ RSpec.describe QuestionsController, type: :controller do
       end
     end
 
-    describe 'Unauthorized user' do
+    context 'unauthorized user' do
       before { get :show, params: { id: question } }
 
       it 'assigns the requested question to @question' do
@@ -48,34 +47,30 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'GET #new' do
-    before { login(user) }
-    before { get :new }
+    context 'authorized user' do
+      before { login(user1) }
+      before { get :new }
 
-    it 'assigns a new Question to @question' do
-      expect(assigns(:question)).to be_a_new(Question)
+      it 'assigns a new Question to @question' do
+        expect(assigns(:question)).to be_a_new(Question)
+      end
+
+      it 'renders new view' do
+        expect(response).to render_template :new
+      end
     end
 
-    it 'renders new view' do
-      expect(response).to render_template :new
-    end
-  end
-
-  describe 'GET #edit' do
-    before { login(user) }
-    before { get :edit, params: { id: question } }
-
-    it 'assigns the requested question to @question' do
-      expect(assigns(:question)).to eq question
-    end
-
-    it 'renders edit view' do
-      expect(response).to render_template :edit
+    context 'unauthorized user' do
+      it 'redirects to login page' do
+        get :new
+        expect(response).to redirect_to new_user_session_path
+      end
     end
   end
 
   describe 'POST #create' do
-    context 'Authorized user' do
-      before { login(user) }
+    context 'authorized user' do
+      before { login(user1) }
 
       context 'with valid attributes' do
         it 'saves a new question in the database' do
@@ -84,9 +79,9 @@ RSpec.describe QuestionsController, type: :controller do
           end.to change(Question, :count).by(1)
         end
 
-        it 'redirects to show view' do
+        it 'redirects to index page' do
           post :create, params: { question: attributes_for(:question) }
-          expect(response).to redirect_to assigns(:question)
+          expect(response).to redirect_to questions_path
         end
       end
 
@@ -102,7 +97,7 @@ RSpec.describe QuestionsController, type: :controller do
       end
     end
 
-    context 'Unauthorized user' do
+    context 'unauthorized user' do
       it 'does not save the question' do
         expect { post :create, params: { question: attributes_for(:question) } }.to_not change(Question, :count)
       end
@@ -115,62 +110,70 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'PATCH #update' do
-    before { login(user) }
+    context 'author' do
+      before { login(user1) }
 
-    context 'with valid attributes' do
-      it 'assigns the requested question to @question' do
-        patch :update, params: { id: question, question: attributes_for(:question) }
-        expect(assigns(:question)).to eq question
+      context 'with valid attributes' do
+        it 'changes question attributes' do
+          patch :update, params: { id: question, question: { title: 'Updated title', body: 'Updated body' } }, format: :js
+          question.reload
+          expect(question.title).to eq 'Updated title'
+          expect(question.body).to eq 'Updated body'
+        end
+
+        it 'renders update view' do
+          patch :update, params: { id: question, question: attributes_for(:question) }, format: :js
+          expect(response).to render_template :update
+        end
       end
 
-      it 'changes question attributes' do
-        patch :update, params: { id: question, question: { title: 'new title', body: 'new body' } }
-        question.reload
+      context 'with invalid attributes' do
+        it 'does not change question' do
+          expect do
+            patch :update, params: { id: question, question: attributes_for(:question, :invalid) }, format: :js
+          end.to_not change(question, :title)
+        end
 
-        expect(question.title).to eq 'new title'
-        expect(question.body).to eq 'new body'
-      end
-
-      it 'redirects to updated question' do
-        patch :update, params: { id: question, question: attributes_for(:question) }
-        expect(response).to redirect_to question
+        it 'renders update view' do
+          patch :update, params: { id: question, question: attributes_for(:question, :invalid) }, format: :js
+          expect(response).to render_template :update
+        end
       end
     end
 
-    context 'with invalid attributes' do
-      let(:question) { create(:question, author: user) }
-      before { patch :update, params: { id: question, question: attributes_for(:question, :invalid) } }
+    context 'non-author' do
+      before { login(user2) }
+      before { patch :update, params: { id: question, question: { title: 'Updated title', body: 'Updated body' } } }
 
       it 'does not change question' do
         question.reload
-
-        expect(question.title).to eq 'Question Title'
-        expect(question.body).to eq 'Question Body'
+        expect(question.title).to eq 'Question title'
+        expect(question.body).to eq 'Question body'
       end
 
-      it 're-renders edit view' do
-        expect(response).to render_template :edit
+      it 'returns status forbidden' do
+        expect(response).to have_http_status(:forbidden)
       end
     end
   end
 
   describe 'DELETE #destroy' do
-    context 'Authorized user' do
-      context 'Author' do
-        before { login(user) }
+    context 'authorized user' do
+      context 'author' do
+        before { login(user1) }
 
         it 'deletes the question' do
           question
-          expect { delete :destroy, params: { id: question } }.to change(Question, :count).by(-1)
+          expect { delete :destroy, params: { id: question }, format: :js }.to change(Question, :count).by(-1)
         end
 
-        it 'redirects to index' do
-          delete :destroy, params: { id: question }
-          expect(response).to redirect_to questions_path
+        it 'renders ajax answer' do
+          delete :destroy, params: { id: question }, format: :js
+          expect(response).to render_template :update
         end
       end
 
-      context 'Not author' do
+      context 'not author' do
         let(:another_user) { create(:user) }
         before { login(another_user) }
 
@@ -186,7 +189,7 @@ RSpec.describe QuestionsController, type: :controller do
       end
     end
 
-    context 'Unauthorized user' do
+    context 'unauthorized user' do
       it 'does not delete the question' do
         question
         expect { delete :destroy, params: { id: question } }.not_to change(Question, :count)

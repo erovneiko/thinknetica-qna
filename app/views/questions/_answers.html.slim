@@ -1,0 +1,5 @@
+- if @question.best_answer
+  = render @question.best_answer
+  = render @question.answers.where.not(id: @question.best_answer.id)
+- else
+  = render @question.answers

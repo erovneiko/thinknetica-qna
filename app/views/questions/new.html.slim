@@ -1,12 +1,18 @@
+h2 New question
+
 = render 'shared/errors', resource: @question
 
 = form_with model: @question, local: true do |f|
-  = f.label :title
-  br
-  = f.text_field :title
-  br
-  = f.label :body
-  br
-  = f.text_area :body
-  br
-  = f.submit 'Ask'
+  p
+    = f.label :title
+    br
+    = f.text_field :title
+  p
+    = f.label :body
+    br
+    = f.text_area :body
+  p
+    = f.submit
+br
+
+p= link_to 'Back', questions_path

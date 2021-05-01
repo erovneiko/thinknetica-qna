@@ -5,36 +5,34 @@ feature 'User can delete question' do
   given!(:answer) { create(:answer, question: question, author: user1) }
 
   describe 'Authorized user' do
-    scenario 'Author tries to delete his question' do
+    scenario 'Author tries to delete his question', js: true do
       sign_in(user1)
 
-      visit question_path(question)
+      visit questions_path
 
-      expect(page).to have_content 'Question Title'
-      expect(page).to have_content 'Question Body'
+      expect(page).to have_content 'Question title'
 
-      click_on 'Delete question'
+      accept_confirm { click_on 'Delete' }
 
-      expect(page).to have_content 'Question successfully deleted'
-      expect(page).not_to have_content 'Question Title'
-      expect(page).not_to have_content 'Question Body'
+      expect(page).not_to have_content 'Question title'
     end
 
     scenario 'Not author tries to delete the question' do
       sign_in(user2)
 
-      visit question_path(question)
+      visit questions_path
 
-      expect(page).to have_content 'Question Title'
-      expect(page).to have_content 'Question Body'
+      expect(page).to have_content 'Question title'
+      expect(page).to have_content 'Question body'
 
-      expect(page).not_to have_link 'Delete question'
+      expect(page).not_to have_link 'Delete'
     end
   end
 
-  scenario 'Unauthorized user tries to delete question' do
-    visit question_path(question)
-
-    expect(page).not_to have_link 'Delete question'
+  describe 'Unauthorized user' do
+    scenario 'tries to delete question at index page' do
+      visit questions_path
+      expect(page).not_to have_link 'Delete'
+    end
   end
 end
