@@ -10,6 +10,13 @@ p= question.author.email
     = f.label :body
     br
     = f.text_area :body
+  - question.files.each do |file|
+    p id = "file-#{file.id}"
+      = link_to file.filename.to_s, url_for(file)
+      = link_to octicon("x", height: 16, class: 'delete'), questions_file_path(file.id),
+                id: "delete-file-#{file.id}", method: :delete, remote: true
+  p
+    = f.file_field :files, multiple: true, direct_upload: true
   p
     = f.submit
 p

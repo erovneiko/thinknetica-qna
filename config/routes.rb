@@ -7,5 +7,8 @@ Rails.application.routes.draw do
     end
   end
 
+  delete '/questions/files/:id', to: 'questions#delete_file', as: 'questions_file'
+  delete '/answers/files/:id', to: 'answers#delete_file', as: 'answers_file'
+
   root to: 'questions#index'
 end

@@ -2,11 +2,18 @@ div id="answer_#{answer.id}"
   - if answer.is_the_best?
     = octicon "star-fill", height: 24, class: 'best'
   p= answer.body
+  - answer.files.each do |file|
+    p id = "file-#{file.id}"
+      = link_to file.filename.to_s, url_for(file)
+      = link_to octicon("x", height: 16, class: 'delete'), answers_file_path(file.id),
+              id: "delete-file-#{file.id}", method: :delete, remote: true
   p= answer.author.email
 
   = form_with model: answer, local: false, class: 'hidden', html: { id: "edit-answer-#{answer.id}" } do |f|
     p
       = f.text_area :body
+    p
+      = f.file_field :files, multiple: true, direct_upload: true
     p
       = f.submit
   p

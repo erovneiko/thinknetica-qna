@@ -34,6 +34,7 @@ gem 'slim-rails'
 gem 'devise'
 gem 'jquery-rails'
 gem 'octicons_helper'
+gem 'aws-sdk-s3', require: false
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
