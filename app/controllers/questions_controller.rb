@@ -41,15 +41,6 @@ class QuestionsController < ApplicationController
     render :update
   end
 
-  def delete_file
-    @file = ActiveStorage::Attachment.find(params[:id])
-    question = Question.find(@file.record_id)
-
-    return head(:forbidden) unless current_user.author_of?(question)
-
-    @file.purge
-  end
-
   private
 
   def load_question

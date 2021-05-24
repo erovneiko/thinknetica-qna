@@ -31,15 +31,6 @@ class AnswersController < ApplicationController
     render :update
   end
 
-  def delete_file
-    @file = ActiveStorage::Attachment.find(params[:id])
-    answer = Answer.find(@file.record_id)
-
-    return head(:forbidden) unless current_user.author_of?(answer)
-
-    @file.purge
-  end
-
   private
 
   def find_answer
