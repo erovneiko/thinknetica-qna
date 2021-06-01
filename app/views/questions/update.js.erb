@@ -1,5 +1,5 @@
 $('.question-errors').html(`<%= render 'shared/errors', resource: @question%>`);
 
 <% if !@question.errors.present? %>
-  $('.questions').html(`<%= j render @questions %>`);
+  $('.questions').html(`<%= j render @questions %>`).find('.gist').each(loadGist);
 <% end %>

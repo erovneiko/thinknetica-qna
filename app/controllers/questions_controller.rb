@@ -1,17 +1,23 @@
 class QuestionsController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show]
   before_action :load_question, only: [:show, :update, :destroy]
+  before_action :check_author, only: [:destroy, :update]
 
   def index
     @questions = Question.all
   end
 
   def show
-    @answer = Answer.new if user_signed_in?
+    if user_signed_in?
+      @answer = Answer.new
+      @answer.links.new
+    end
   end
 
   def new
     @question = Question.new
+    @question.links.new
+    @question.award = Award.new
   end
 
   def create
@@ -26,16 +32,11 @@ class QuestionsController < ApplicationController
   end
 
   def update
-    return head(:forbidden) unless current_user.author_of?(@question)
-
-    @question.files.attach question_params[:files]
-    @question.update(title: question_params[:title], body: question_params[:body])
+    @question.update(question_params)
     @questions = Question.all
   end
 
   def destroy
-    return head(:forbidden) unless current_user.author_of?(@question)
-
     @question.destroy
     @questions = Question.all
     render :update
@@ -47,7 +48,13 @@ class QuestionsController < ApplicationController
     @question = Question.with_attached_files.find(params[:id])
   end
 
+  def check_author
+    head(:forbidden) unless current_user.author_of?(@question)
+  end
+
   def question_params
-    params.require(:question).permit(:title, :body, files: [])
+    params.require(:question).permit(:title, :body, files: [],
+                                     links_attributes: [:id, :name, :url, :_destroy],
+                                     award_attributes: [:name, :image])
   end
 end

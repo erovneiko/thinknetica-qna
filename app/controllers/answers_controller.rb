@@ -19,8 +19,7 @@ class AnswersController < ApplicationController
   end
 
   def update
-    @answer.files.attach answer_params[:files]
-    @answer.update(body: answer_params[:body])
+    @answer.update(answer_params)
     render :update
   end
 
@@ -47,6 +46,6 @@ class AnswersController < ApplicationController
   end
 
   def answer_params
-    params.require(:answer).permit(:body, files: [])
+    params.require(:answer).permit(:body, files: [], links_attributes: [:id, :name, :url, :_destroy])
   end
 end

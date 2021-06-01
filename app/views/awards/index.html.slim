@@ -1,0 +1,7 @@
+.awards style="text-align: center"
+  - @awards.each do |award|
+    h3= award.question.title
+    p= award.name
+    =image_tag url_for(award.image)
+
+  p= link_to 'Back', questions_path

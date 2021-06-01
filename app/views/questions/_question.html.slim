@@ -2,23 +2,13 @@ h3= question.title
 p= question.author.email
 
 = form_with model: question, local: false, class: 'hidden', html: { id: "edit-question-#{question.id}" } do |f|
-  p
-    = f.label :title
-    br
-    = f.text_field :title
-  p
-    = f.label :body
-    br
-    = f.text_area :body
-  - question.files.each do |file|
-    p id = "file-#{file.id}"
-      = link_to file.filename.to_s, url_for(file)
-      = link_to octicon("x", height: 16, class: 'delete'), file_path(file.id),
-              id: "delete-file-#{file.id}", method: :delete, remote: true
-  p
-    = f.file_field :files, multiple: true, direct_upload: true
-  p
-    = f.submit
+  p= f.text_field :title
+  p= f.text_area :body
+  = render 'shared/files', resource: question
+  p= f.file_field :files, multiple: true, direct_upload: true
+  = render 'shared/links', resource: question
+  = render 'shared/links_form', f: f
+  p= f.submit
 p
   = link_to 'Show', question_path(question)
   - if current_user&.author_of?(question)

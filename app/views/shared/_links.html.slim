@@ -1,0 +1,11 @@
+.links
+  - resource.links.each do |link|
+    div id = "link-#{link.id}" style="display: flex"
+      p style="margin-top: 0"
+        - if link.gist?
+          .gist data-src=link.url+'.json'
+        - else
+          = link_to link.name, link.url
+
+        = link_to octicon("x", height: 16, class: 'delete'), link_path(link.id),
+                id: "delete-link-#{link.id}", method: :delete, remote: true
