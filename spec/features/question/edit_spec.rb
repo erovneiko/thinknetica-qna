@@ -24,6 +24,32 @@ feature 'Question can be edited' do
         end
       end
 
+      scenario 'with attached files', js: true do
+        attach_file ["#{Rails.root}/spec/rails_helper.rb", "#{Rails.root}/spec/spec_helper.rb"], id: 'question_files'
+
+        click_on 'Update Question'
+        click_link 'Edit'
+
+        within '.questions' do
+          expect(page).to have_link 'rails_helper.rb'
+          expect(page).to have_link 'spec_helper.rb'
+        end
+      end
+
+      scenario 'deleting file', js: true do
+        attach_file ["#{Rails.root}/spec/rails_helper.rb", "#{Rails.root}/spec/spec_helper.rb"], id: 'question_files'
+
+        click_on 'Update Question'
+        click_link 'Edit'
+        click_link id: "delete-file-#{question.files.first.id}"
+
+        # save_and_open_page
+        within '.questions' do
+          expect(page).not_to have_link 'rails_helper.rb'
+          expect(page).to have_link 'spec_helper.rb'
+        end
+      end
+
       scenario 'with errors', js: true do
         fill_in 'Title', with: ''
         fill_in 'Body', with: ''

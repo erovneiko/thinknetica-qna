@@ -12,6 +12,8 @@ h2 New question
     br
     = f.text_area :body
   p
+    = f.file_field :files, multiple: true, direct_upload: true
+  p
     = f.submit
 br
 

@@ -3,6 +3,8 @@
 .question
   h3= @question.title
   p= @question.body
+  - @question.files.each do |file|
+    p= link_to file.filename.to_s, url_for(file)
   p= @question.author.email
 br
 
@@ -14,6 +16,8 @@ br
     = form_with model: [@question, @answer], local: false, class: 'new-answer' do |f|
       p
         = f.text_area :body
+      p
+        = f.file_field :files, multiple: true
       p
         = f.submit
     br

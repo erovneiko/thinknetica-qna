@@ -23,6 +23,18 @@ feature 'Answer is edited' do
         end
       end
 
+      scenario 'with attached files', js: true do
+        within '.answers' do
+          attach_file ["#{Rails.root}/spec/rails_helper.rb", "#{Rails.root}/spec/spec_helper.rb"], id: 'answer_files'
+
+          click_on 'Update Answer'
+          click_link 'Edit'
+
+          expect(page).to have_link 'rails_helper.rb'
+          expect(page).to have_link 'spec_helper.rb'
+        end
+      end
+
       scenario 'with errors', js: true do
         within('.answers') do
           fill_in with: '', id: 'answer_body'
