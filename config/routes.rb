@@ -4,7 +4,11 @@ Rails.application.routes.draw do
   resources :questions, except: :edit do
     resources :answers, shallow: true do
       put :best, on: :member
+      put :vote_up, on: :member
+      put :vote_down, on: :member
     end
+    put :vote_up, on: :member
+    put :vote_down, on: :member
   end
 
   resources :files, only: :destroy

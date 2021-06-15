@@ -1,8 +1,9 @@
 class AnswersController < ApplicationController
   before_action :authenticate_user!
-  before_action :find_answer, only: [:destroy, :update, :best]
+  before_action :find_answer, only: [:destroy, :update, :best, :vote_up, :vote_down]
   before_action :check_author, only: [:destroy, :update]
   before_action :find_question, only: [:create]
+  before_action :load_vote, only: [:vote_up, :vote_down]
 
   def create
     @answer = @question.answers.new(answer_params)
@@ -30,11 +31,39 @@ class AnswersController < ApplicationController
     render :update
   end
 
+  def vote_up
+    return head(:forbidden) if current_user.author_of?(@answer)
+
+    if @vote
+      @vote.update(result: 1) if @vote.result == -1
+    else
+      Vote.create(user: current_user, votable: @answer, result: 1)
+    end
+
+    render json: { votes: @answer.votes.sum(:result) }
+  end
+
+  def vote_down
+    return head(:forbidden) if current_user.author_of?(@answer)
+
+    if @vote
+      @vote.update(result: -1) if @vote.result == 1
+    else
+      Vote.create(user: current_user, votable: @answer, result: -1)
+    end
+
+    render json: { votes: @answer.votes.sum(:result) }
+  end
+
   private
 
   def find_answer
     @answer = Answer.with_attached_files.find(params[:id])
     @question = @answer.question
+  end
+
+  def load_vote
+    @vote = Vote.find_by(user: current_user, votable: @answer)
   end
 
   def check_author

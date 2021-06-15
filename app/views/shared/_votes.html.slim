@@ -1,0 +1,10 @@
+p class="votes"
+  - if user_signed_in? and !current_user&.author_of?(resource)
+    = link_to octicon("thumbsup", height: 16, class: 'up'),
+              polymorphic_path(resource, action: :vote_up),
+              class: 'vote-up-link', method: :put, remote: true, data: { type: :json }
+    = link_to octicon("thumbsdown", height: 16, class: 'down'),
+              polymorphic_path(resource, action: :vote_down),
+              class: 'vote-down-link', method: :put, remote: true, data: { type: :json }
+  span class="result"
+    = resource.votes.sum(:result)

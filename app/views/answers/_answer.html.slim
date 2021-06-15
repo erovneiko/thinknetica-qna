@@ -3,8 +3,8 @@ div id="answer_#{answer.id}"
     = octicon "star-fill", height: 24, class: 'best'
 
   p= answer.body
-  = render('shared/files', resource: answer)
-  = render('shared/links', resource: answer)
+  = render 'shared/files', resource: answer
+  = render 'shared/links', resource: answer
   p= answer.author.email
 
   = form_with model: answer, local: false, class: 'hidden', html: { id: "edit-answer-#{answer.id}" } do |f|
@@ -19,4 +19,6 @@ div id="answer_#{answer.id}"
     - if current_user&.author_of?(answer)
       = link_to 'Edit', '#', class: 'edit-answer-link', data: { answer_id: answer.id }
       = link_to 'Delete', answer_path(answer), method: :delete, data: { confirm: 'Are you sure?' }, remote: true
-  br
+
+  = render 'shared/votes', resource: answer
+br
