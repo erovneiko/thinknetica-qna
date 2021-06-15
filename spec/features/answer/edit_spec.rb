@@ -35,6 +35,40 @@ feature 'Answer is edited' do
         end
       end
 
+      scenario 'deleting link', js: true do
+        within '.answers' do
+          click_link 'Add'
+
+          within '.nested-fields' do
+            all('input')[0].fill_in with: 'google'
+            all('input')[1].fill_in with: 'https://google.com'
+          end
+
+          click_button 'Update Answer'
+
+          click_link 'Edit'
+          click_link id: "delete-link-#{answer.links.first.id}"
+
+          expect(page).not_to have_link 'google'
+        end
+      end
+
+      scenario 'adding new link', js: true do
+        within '.answers' do
+          click_link 'Add'
+
+          within '.nested-fields' do
+            all('input')[0].fill_in with: 'google'
+            all('input')[1].fill_in with: 'https://google.com'
+          end
+
+          click_button 'Update Answer'
+          click_link 'Edit'
+
+          expect(page).to have_link 'google'
+        end
+      end
+
       scenario 'with errors', js: true do
         within('.answers') do
           fill_in with: '', id: 'answer_body'

@@ -3,5 +3,5 @@
 <% end %>
 
 <% if !@answer.errors.present? %>
-  $('.answers').html(`<%= j render 'questions/answers' %>`);
+  $('.answers').html(`<%= j render 'questions/answers' %>`).find('.gist').each(loadGist);
 <% end %>

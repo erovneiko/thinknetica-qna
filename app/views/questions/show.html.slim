@@ -3,8 +3,8 @@
 .question
   h3= @question.title
   p= @question.body
-  - @question.files.each do |file|
-    p= link_to file.filename.to_s, url_for(file)
+  = render('shared/files', resource: @question)
+  = render('shared/links', resource: @question)
   p= @question.author.email
 br
 
@@ -14,12 +14,12 @@ br
 - unless @answer.nil?
   .new_answer
     = form_with model: [@question, @answer], local: false, class: 'new-answer' do |f|
-      p
-        = f.text_area :body
-      p
-        = f.file_field :files, multiple: true
-      p
-        = f.submit
+      p= f.text_area :body
+      p= f.file_field :files, multiple: true
+      br
+      = render 'shared/links_form', f: f
+      br
+      p= f.submit
     br
 
 p= link_to 'Back', questions_path

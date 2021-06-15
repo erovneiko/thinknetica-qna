@@ -12,8 +12,8 @@ feature 'Question can be edited' do
       end
 
       scenario 'without errors', js: true do
-        fill_in 'Title', with: 'Updated title'
-        fill_in 'Body', with: 'Updated body'
+        fill_in with: 'Updated title', id: 'question_title'
+        fill_in with: 'Updated body', id: 'question_body'
 
         click_on 'Update Question'
 
@@ -50,9 +50,43 @@ feature 'Question can be edited' do
         end
       end
 
+      scenario 'deleting link', js: true do
+        within '.questions' do
+          click_link 'Add'
+
+          within '.nested-fields' do
+            all('input')[0].fill_in with: 'google'
+            all('input')[1].fill_in with: 'https://google.com'
+          end
+
+          click_button 'Update Question'
+
+          click_link 'Edit'
+          click_link id: "delete-link-#{question.links.first.id}"
+
+          expect(page).not_to have_link 'google'
+        end
+      end
+
+      scenario 'adding new link', js: true do
+        within '.questions' do
+          click_link 'Add'
+
+          within '.nested-fields' do
+            all('input')[0].fill_in with: 'google'
+            all('input')[1].fill_in with: 'https://google.com'
+          end
+
+          click_button 'Update Question'
+          click_link 'Edit'
+
+          expect(page).to have_link 'google'
+        end
+      end
+
       scenario 'with errors', js: true do
-        fill_in 'Title', with: ''
-        fill_in 'Body', with: ''
+        fill_in with: '', id: 'question_title'
+        fill_in with: '', id: 'question_body'
 
         click_on 'Update Question'
 

@@ -11,10 +11,21 @@ h2 New question
     = f.label :body
     br
     = f.text_area :body
-  p
-    = f.file_field :files, multiple: true, direct_upload: true
-  p
-    = f.submit
-br
 
+  p= f.file_field :files, multiple: true, direct_upload: true
+  br
+
+  p Links
+  p= render 'shared/links_form', f: f
+  br
+
+  = f.fields_for :award do |award|
+    p= award.label :name, 'Award'
+    p= award.text_field :name
+    p= award.file_field :image, direct_upload: true
+  br
+
+  p= f.submit
+
+br
 p= link_to 'Back', questions_path

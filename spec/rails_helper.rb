@@ -38,6 +38,7 @@ RSpec.configure do |config|
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include ControllerHelpers, type: :controller
   config.include FeatureHelpers, type: :feature
+  config.include ActionDispatch::TestProcess
 
   # Capybara.javascript_driver = :selenium_chrome
   Capybara.javascript_driver = :selenium_chrome_headless
@@ -82,3 +83,5 @@ Shoulda::Matchers.configure do |config|
     with.library :rails
   end
 end
+
+require 'validate_url/rspec_matcher'
