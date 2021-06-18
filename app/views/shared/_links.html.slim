@@ -6,6 +6,6 @@
           .gist data-src=link.url+'.json'
         - else
           = link_to link.name, link.url
-
-        = link_to octicon("x", height: 16, class: 'delete'), link_path(link.id),
-                id: "delete-link-#{link.id}", method: :delete, remote: true
+        - if user_signed_in?
+          = link_to octicon("x", height: 16, class: 'delete'), link_path(link.id),
+                  id: "delete-link-#{link.id}", method: :delete, remote: true

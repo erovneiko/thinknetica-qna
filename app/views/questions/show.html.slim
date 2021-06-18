@@ -3,9 +3,10 @@
 .question
   h3= @question.title
   p= @question.body
-  = render('shared/files', resource: @question)
-  = render('shared/links', resource: @question)
+  = render 'shared/files', resource: @question
+  = render 'shared/links', resource: @question
   p= @question.author.email
+  = render 'shared/votes', resource: @question
 br
 
 .answers

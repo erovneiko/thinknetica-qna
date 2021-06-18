@@ -25,7 +25,7 @@ p, h3 {
 
 svg.best {
   display: block;
-  margin-left: -36px;
+  margin-left: -32px;
   margin-bottom: -28px;
   padding-top: 4px;
   fill: orange;
@@ -39,4 +39,26 @@ svg.delete {
 
 input[type="file"] {
   margin-top: 4px;
+}
+
+p.votes {
+  svg {
+    fill: steelblue;
+    vertical-align: top;
+    margin-top: 2px;
+    margin-right: 4px;
+  }
+
+  svg.down {
+    margin-top: 4px;
+  }
+
+  span.result {
+    display: inline-block;
+    margin-top: 2px;
+    margin-left: 1px;
+    padding: 2px 5px 1px 4px;
+    background-color: #d6e2f5;
+    font-size: small;
+  }
 }
