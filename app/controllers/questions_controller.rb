@@ -1,7 +1,7 @@
 class QuestionsController < ApplicationController
-  before_action :authenticate_user!, except: [:index, :show]
-  before_action :load_question, only: [:show, :update, :destroy, :vote_up, :vote_down]
-  before_action :load_vote, only: [:vote_up, :vote_down]
+  include Voted
+  skip_before_action :authenticate_user!, only: [:index, :show]
+  before_action :load_question, only: [:show, :update, :destroy]
   before_action :check_author, only: [:destroy, :update]
 
   def index
@@ -43,38 +43,10 @@ class QuestionsController < ApplicationController
     render :update
   end
 
-  def vote_up
-    return head(:forbidden) if current_user.author_of?(@question)
-
-    if @vote
-      @vote.update(result: 1) if @vote.result == -1
-    else
-      Vote.create(user: current_user, votable: @question, result: 1)
-    end
-
-    render json: { votes: @question.votes.sum(:result) }
-  end
-
-  def vote_down
-    return head(:forbidden) if current_user.author_of?(@question)
-
-    if @vote
-      @vote.update(result: -1) if @vote.result == 1
-    else
-      Vote.create(user: current_user, votable: @question, result: -1)
-    end
-
-    render json: { votes: @question.votes.sum(:result) }
-  end
-
   private
 
   def load_question
     @question = Question.with_attached_files.find(params[:id])
-  end
-
-  def load_vote
-    @vote = Vote.find_by(user: current_user, votable: @question)
   end
 
   def check_author

@@ -1,3 +1,5 @@
+require_relative 'concerns/voted'
+
 RSpec.describe QuestionsController, type: :controller do
   let(:user1) { create(:user) }
   let(:user2) { create(:user) }
@@ -217,89 +219,8 @@ RSpec.describe QuestionsController, type: :controller do
     end
   end
 
-  describe 'votes' do
-    describe 'authorized user' do
-      context 'PUT #vote_up' do
-        before { login(user2) }
-
-        it 'loads question' do
-          put :vote_up, params: { id: question }, format: :js
-          expect(assigns(:question)).to eq question
-        end
-
-        it 'changes the vote if voted down' do
-          question.votes.create(user: user2, result: -1)
-          expect { put :vote_up, params: { id: question }, format: :js }.to change { question.votes.sum(:result) }.by(2)
-        end
-
-        it 'creates new vote if not voted' do
-          expect { put :vote_up, params: { id: question }, format: :js }.to change { question.votes.sum(:result) }.by(1)
-        end
-
-        it 'renders json with results' do
-          put :vote_up, params: { id: question }, format: :js
-          expect(response.content_type).to match 'json'
-          expect(response.body).to eq '{"votes":1}'
-        end
-      end
-
-      context 'PUT #vote_down' do
-        before { login(user2) }
-
-        it 'loads question' do
-          put :vote_down, params: { id: question }, format: :js
-          expect(assigns(:question)).to eq question
-        end
-
-        it 'changes the vote if voted up' do
-          question.votes.create(user: user2, result: 1)
-          expect { put :vote_down, params: { id: question }, format: :js }.to change { question.votes.sum(:result) }.by(-2)
-        end
-
-        it 'creates vote if not voted' do
-          expect { put :vote_down, params: { id: question }, format: :js }.to change { question.votes.sum(:result) }.by(-1)
-        end
-
-        it 'renders json with results' do
-          put :vote_down, params: { id: question }, format: :js
-          expect(response.content_type).to match 'json'
-          expect(response.body).to eq '{"votes":-1}'
-        end
-      end
-    end
-
-    context 'unauthorized user' do
-      context 'PUT #vote_up' do
-        it 'returns status unauthorized' do
-          put :vote_up, params: { id: question }, format: :js
-          expect(response).to have_http_status(:unauthorized)
-        end
-      end
-
-      context 'PUT #vote_down' do
-        it 'returns status unauthorized' do
-          put :vote_down, params: { id: question }, format: :js
-          expect(response).to have_http_status(:unauthorized)
-        end
-      end
-    end
-
-    context 'author' do
-      before { login(user1) }
-
-      context 'PUT #vote_up' do
-        it 'returns status forbidden' do
-          put :vote_up, params: { id: question }, format: :js
-          expect(response).to have_http_status(:forbidden)
-        end
-      end
-
-      context 'PUT #vote_down' do
-        it 'returns status forbidden' do
-          put :vote_down, params: { id: question }, format: :js
-          expect(response).to have_http_status(:forbidden)
-        end
-      end
-    end
+  describe 'Voted' do
+    let(:votable) { question }
+    it_behaves_like 'Voted'
   end
 end

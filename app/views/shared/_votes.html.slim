@@ -7,4 +7,4 @@ p class="votes"
               polymorphic_path(resource, action: :vote_down),
               class: 'vote-down-link', method: :put, remote: true, data: { type: :json }
   span class="result"
-    = resource.votes.sum(:result)
+    = resource.votes_sum
