@@ -1,4 +1,4 @@
-require 'rails_helper'
+require_relative 'concerns/voted'
 
 RSpec.describe AnswersController, type: :controller do
   let(:user1) { create(:user) }
@@ -197,5 +197,10 @@ RSpec.describe AnswersController, type: :controller do
         expect(response).to redirect_to new_user_session_path
       end
     end
+  end
+
+  describe 'Voted' do
+    let(:votable) { answer }
+    it_behaves_like 'Voted'
   end
 end

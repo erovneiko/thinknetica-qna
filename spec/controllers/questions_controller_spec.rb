@@ -1,3 +1,5 @@
+require_relative 'concerns/voted'
+
 RSpec.describe QuestionsController, type: :controller do
   let(:user1) { create(:user) }
   let(:user2) { create(:user) }
@@ -215,5 +217,10 @@ RSpec.describe QuestionsController, type: :controller do
         expect(response).to redirect_to new_user_session_path
       end
     end
+  end
+
+  describe 'Voted' do
+    let(:votable) { question }
+    it_behaves_like 'Voted'
   end
 end

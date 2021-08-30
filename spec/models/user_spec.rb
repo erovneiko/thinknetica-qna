@@ -4,6 +4,7 @@ RSpec.describe User, type: :model do
   describe 'associations' do
     it { should have_many(:answers).with_foreign_key('author_id').dependent(:destroy) }
     it { should have_many(:questions).with_foreign_key('author_id').dependent(:destroy) }
+    it { should have_many(:votes) }
   end
 
   describe 'validations' do
