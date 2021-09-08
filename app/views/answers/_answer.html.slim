@@ -1,4 +1,4 @@
-div id="answer_#{answer.id}"
+div id="answer-#{answer.id}"
   - if answer.is_the_best?
     = octicon "star-fill", height: 24, class: 'best'
 
@@ -12,13 +12,19 @@ div id="answer_#{answer.id}"
     p= f.file_field :files, multiple: true, direct_upload: true
     = render 'shared/links_form', f: f
     p= f.submit
+
+  = render 'shared/votes', resource: answer
+
   p
     - if current_user&.author_of?(answer.question) && !answer.is_the_best?
       = link_to 'Best', best_answer_path(answer), method: :put, remote: true
-
     - if current_user&.author_of?(answer)
       = link_to 'Edit', '#', class: 'edit-answer-link', data: { answer_id: answer.id }
       = link_to 'Delete', answer_path(answer), method: :delete, data: { confirm: 'Are you sure?' }, remote: true
+    - if user_signed_in? & !current_user&.author_of?(answer)
+      = link_to 'Comment', new_answer_comment_path(answer)
 
-  = render 'shared/votes', resource: answer
+  .comments
+    = render answer.comments
+
 br

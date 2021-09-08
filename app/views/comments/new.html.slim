@@ -1,0 +1,8 @@
+h1 New comment
+
+== render 'form'
+
+- if @commentable.is_a?(Question)
+  = link_to 'Back', questions_path
+- elsif @commentable.is_a?(Answer)
+  = link_to 'Back', question_path(@commentable.question)

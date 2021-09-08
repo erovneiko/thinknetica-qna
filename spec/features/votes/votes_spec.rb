@@ -28,7 +28,7 @@ feature 'User' do
           scenario 'for the answer', js: true do
             visit question_path(question)
 
-            within "#answer_#{answer.id}" do
+            within "#answer-#{answer.id}" do
               expect(page).to have_selector('a.vote-up-link')
               expect(page).to have_selector('a.vote-down-link')
 
@@ -58,7 +58,7 @@ feature 'User' do
         scenario 'for the answer', js: true do
           visit question_path(question)
 
-          within "#answer_#{answer.id}" do
+          within "#answer-#{answer.id}" do
             find('.vote-down-link').click
             expect(find('span.result')).to have_content('-1')
 
@@ -83,7 +83,7 @@ feature 'User' do
         scenario 'for the answer' do
           visit question_path(question)
 
-          within "#answer_#{answer.id}" do
+          within "#answer-#{answer.id}" do
             expect(page).not_to have_selector('a.vote-up-link')
             expect(page).not_to have_selector('a.vote-down-link')
           end
