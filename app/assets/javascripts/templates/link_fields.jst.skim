@@ -1,0 +1,9 @@
+.nested-fields
+  p
+    input type="text" value="#{@link.name}" name="#{@name}[links_attributes][#{@index}][name]" id="#{@name}_links_attributes_#{@index}_name"
+  p
+    input type="text" value="#{@link.url}" name="#{@name}[links_attributes][#{@index}][url]" id="#{@name}_links_attributes_#{@index}_url"
+  input value="false" type="hidden" name="#{@name}[links_attributes][#{@index}][_destroy]" id="#{@name}_links_attributes_#{@index}__destroy"
+  a class="remove_fields existing" href="#"
+    = 'Remove'
+input type="hidden" value="#{@link.id}" name="#{@name}[links_attributes][#{@index}][id]" id="#{@name}_links_attributes_#{@index}_id"

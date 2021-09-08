@@ -10,7 +10,7 @@ feature 'Answer is chosen as the best' do
     sign_in user1
     visit question_path(question)
 
-    node1 = find("div#answer_#{answer1.id}")
+    node1 = find("div#answer-#{answer1.id}")
 
     within node1 do
       click_link 'Best'

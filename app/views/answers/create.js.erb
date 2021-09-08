@@ -1,8 +1,8 @@
 $('.answer-errors').html(`<%= render 'shared/errors', resource: @answer %>`);
 
 <% if @answer.persisted? %>
-  $('.answers').append(`<%= j render @answer %>`).find('.gist').each(loadGist);
+  $('.new-answer #answer_files').val('');
   $('.new-answer #answer_body').val('');
-  $('.nested-fields').not(':first').remove();
-  $('.nested-fields input').val('');
+  $('.new-answer .nested-fields').not(':first').remove();
+  $('.new-answer .nested-fields input').val('');
 <% end %>
