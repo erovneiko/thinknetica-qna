@@ -5,7 +5,6 @@ module Voted
     before_action :load_votable, only: [:vote_up, :vote_down]
     before_action :load_vote, only: [:vote_up, :vote_down]
     before_action :check_votable_author, only: [:vote_up, :vote_down]
-
   end
 
   def vote_up

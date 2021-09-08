@@ -39,6 +39,35 @@ feature 'User can answer the question' do
     end
   end
 
+  scenario 'with cable', js: true do
+    Capybara.using_session('user') do
+      sign_in(user)
+      visit question_path(question)
+    end
+
+    Capybara.using_session('guest') do
+      visit question_path(question)
+    end
+
+    Capybara.using_session('user') do
+      fill_in with: 'Answer Body', id: 'answer_body'
+
+      click_on 'Create Answer'
+
+      expect(current_path).to eq question_path(question)
+
+      within '.answers' do
+        expect(page).to have_content 'Answer Body'
+      end
+    end
+
+    Capybara.using_session('guest') do
+      within '.answers' do
+        expect(page).to have_content 'Answer Body'
+      end
+    end
+  end
+
   scenario 'Unauthenticated user creates answer to the question' do
     visit question_path(question)
 

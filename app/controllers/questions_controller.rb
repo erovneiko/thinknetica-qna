@@ -3,6 +3,7 @@ class QuestionsController < ApplicationController
   skip_before_action :authenticate_user!, only: [:index, :show]
   before_action :load_question, only: [:show, :update, :destroy]
   before_action :check_author, only: [:destroy, :update]
+  after_action :publish_question, only: [:create]
 
   def index
     @questions = Question.all
@@ -45,8 +46,40 @@ class QuestionsController < ApplicationController
 
   private
 
+  def publish_question
+    return if @question.errors.any?
+
+    ActionCable.server.broadcast 'Questions', {
+      action: action_name,
+      question: {
+        id: @question.id,
+        title: @question.title,
+        body: @question.body,
+        author: {
+          id: @question.author.id,
+          email: @question.author.email
+        },
+        files: @question.files.map { |file| {
+          id: file.id,
+          name: file.filename,
+          url: url_for(file)
+        } },
+        links: @question.links.map { |link| {
+          id: link.id,
+          name: link.name,
+          url: link.url,
+          gist: link.gist?
+        } },
+        votes_sum: @question.votes_sum,
+        path: "/questions/#{@question.id}",
+        name: 'question'
+      }
+    }
+  end
+
   def load_question
     @question = Question.with_attached_files.find(params[:id])
+    gon.question_id = @question.id
   end
 
   def check_author

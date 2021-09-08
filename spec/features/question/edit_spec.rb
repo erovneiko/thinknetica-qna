@@ -60,12 +60,11 @@ feature 'Question can be edited' do
           end
 
           click_button 'Update Question'
-
-          click_link 'Edit'
-          click_link id: "delete-link-#{question.links.first.id}"
-
-          expect(page).not_to have_link 'google'
+          click_link 'Show'
         end
+
+        click_link id: "delete-link-#{question.links.first.id}"
+        expect(page).not_to have_link 'google'
       end
 
       scenario 'adding new link', js: true do
@@ -78,10 +77,10 @@ feature 'Question can be edited' do
           end
 
           click_button 'Update Question'
-          click_link 'Edit'
-
-          expect(page).to have_link 'google'
+          click_link 'Show'
         end
+
+        expect(page).to have_link 'google'
       end
 
       scenario 'with errors', js: true do

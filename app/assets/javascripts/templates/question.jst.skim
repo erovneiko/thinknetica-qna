@@ -1,0 +1,35 @@
+div id="@question-#{@question.id}"
+  h3= @question.title
+  p= @question.author.email
+
+  form class="hidden" id="edit-question-#{@question.id}" enctype="multipart/form-data" action="/questions/#{@question.id}" accept-charset="UTF-8" data-remote="true" method="post"
+    input type="hidden" name="_method" value="patch"
+    input type="hidden" name="authenticity_token" value="#{gon.form_auth_token}"
+    p
+      input type="text" value="#{@question.title}" name="question[title]" id="question_title"
+    p
+      textarea name="question[body]" id="question_body"
+        = @question.body
+    == JST["templates/files"]({ resource: @question })
+    p
+      input multiple="multiple" data-direct-upload-url="/rails/active_storage/direct_uploads" type="file" name="question[files][]" id="question_files"
+    == JST["templates/links_form"]({ resource: @question })
+    p
+      input type="submit" name="commit" value="Update Question" data-disable-with="Update Question"
+
+  == JST["templates/votes"]({ resource: @question })
+
+  p
+    a href="#{@question.path}" Show
+    - if gon.current_user_id && (gon.current_user_id == @question.author.id)
+      a class="edit-question-link" data-question-id="#{@question.id}" href="#"
+        = 'Edit'
+      a data-confirm="Are you sure?" data-remote="true" rel="nofollow" data-method="delete" href="#{@question.path}"
+        = 'Delete'
+    - if gon.current_user_id && (gon.current_user_id != @question.author.id)
+      a href="#{@question.path}/comments/new"
+        = 'Comment'
+
+  .comments
+
+br

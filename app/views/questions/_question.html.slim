@@ -1,19 +1,26 @@
-h3= question.title
-p= question.author.email
+div id="question-#{question.id}"
+  h3= question.title
+  p= question.author.email
 
-= form_with model: question, local: false, class: 'hidden', html: { id: "edit-question-#{question.id}" } do |f|
-  p= f.text_field :title
-  p= f.text_area :body
-  = render 'shared/files', resource: question
-  p= f.file_field :files, multiple: true, direct_upload: true
-  = render 'shared/links', resource: question
-  = render 'shared/links_form', f: f
-  p= f.submit
-p
-  = link_to 'Show', question_path(question)
-  - if current_user&.author_of?(question)
-    = link_to 'Edit', '#', class: 'edit-question-link', data: { question_id: question.id }
-    = link_to 'Delete', question_path(question), method: :delete, data: { confirm: 'Are you sure?' }, remote: true
+  = form_with model: question, local: false, class: 'hidden', html: { id: "edit-question-#{question.id}" } do |f|
+    p= f.text_field :title
+    p= f.text_area :body
+    = render 'shared/files', resource: question
+    p= f.file_field :files, multiple: true, direct_upload: true
+    = render 'shared/links_form', f: f
+    p= f.submit
 
-= render 'shared/votes', resource: question
+  = render 'shared/votes', resource: question
+
+  p
+    = link_to 'Show', question_path(question)
+    - if current_user&.author_of?(question)
+      = link_to 'Edit', '#', class: 'edit-question-link', data: { question_id: question.id }
+      = link_to 'Delete', question_path(question), method: :delete, data: { confirm: 'Are you sure?' }, remote: true
+    - if user_signed_in? & !current_user&.author_of?(question)
+      = link_to 'Comment', new_question_comment_path(question)
+
+  .comments
+    = render question.comments
+
 br
