@@ -46,6 +46,32 @@ feature 'User can create question', "
     end
   end
 
+  scenario 'with cable', js: true do
+    Capybara.using_session('user') do
+      sign_in(user)
+      visit questions_path
+    end
+
+    Capybara.using_session('guest') do
+      visit questions_path
+    end
+
+    Capybara.using_session('user') do
+      click_on 'Ask'
+
+      fill_in 'Title', with: 'Title'
+      fill_in 'Body', with: 'Body'
+
+      click_on 'Create Question'
+
+      expect(page).to have_content 'Title'
+    end
+
+    Capybara.using_session('guest') do
+      expect(page).to have_content 'Title'
+    end
+  end
+
   scenario 'Unauthenticated user tries to ask a question' do
     visit questions_path
     expect(page).not_to have_link 'Ask'
