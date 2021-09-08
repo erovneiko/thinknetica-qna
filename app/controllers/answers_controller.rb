@@ -3,6 +3,7 @@ class AnswersController < ApplicationController
   before_action :find_answer, only: [:destroy, :update, :best]
   before_action :check_author, only: [:destroy, :update]
   before_action :find_question, only: [:create]
+  after_action :publish_answer, only: [:create]
 
   def create
     @answer = @question.answers.new(answer_params)
@@ -31,6 +32,41 @@ class AnswersController < ApplicationController
   end
 
   private
+
+  def publish_answer
+    return if @answer.errors.any?
+
+    AnswersChannel.broadcast_to @question, {
+      action: action_name,
+      id: @answer.id,
+      body: @answer.body,
+      is_the_best: @answer.is_the_best?,
+      author: {
+        id: @answer.author.id,
+        email: @answer.author.email
+      },
+      question: {
+        id: @question.id,
+        author: {
+          id: @question.author.id
+        }
+      },
+      files: @answer.files.map { |file| {
+        id: file.id,
+        name: file.filename,
+        url: url_for(file)
+      } },
+      links: @answer.links.map { |link| {
+        id: link.id,
+        name: link.name,
+        url: link.url,
+        gist: link.gist?
+      } },
+      votes_sum: @answer.votes_sum,
+      path: "/answers/#{@answer.id}",
+      name: 'answer'
+    }
+  end
 
   def find_answer
     @answer = Answer.with_attached_files.find(params[:id])

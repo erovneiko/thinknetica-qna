@@ -14,6 +14,8 @@ class Question < ApplicationRecord
   has_one :award, dependent: :destroy
   accepts_nested_attributes_for :award, reject_if: :all_blank
 
+  has_many :comments, dependent: :destroy, as: :commentable
+
   default_scope { order(:title) }
 
   validates :title, :body, presence: true

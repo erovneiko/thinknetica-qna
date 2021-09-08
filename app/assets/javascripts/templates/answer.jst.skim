@@ -1,0 +1,37 @@
+div id="answer-#{@answer.id}"
+  p= @answer.body
+  == JST["templates/files"]({ resource: @answer })
+  == JST["templates/links"]({ resource: @answer })
+  p= @answer.author.email
+
+  - if gon.current_user_id && (gon.current_user_id == @answer.author.id)
+    form class="hidden" id="edit-answer-#{@answer.id}" enctype="multipart/form-data" action="#{@answer.path}" accept-charset="UTF-8" data-remote="true" method="post"
+      input type="hidden" name="_method" value="patch"
+      input type="hidden" name="authenticity_token" value="#{gon.form_auth_token}"
+      p
+        textarea name="answer[body]" id="answer_body"
+          = @answer.body
+      p
+        input multiple="multiple" data-direct-upload-url="/rails/active_storage/direct_uploads" type="file" name="answer[files][]" id="answer_files"
+      == JST["templates/links_form"]({ resource: @answer })
+      p
+        input type="submit" name="commit" value="Update Answer" data-disable-with="Update Answer"
+
+  == JST["templates/votes"]({ resource: @answer })
+
+  p
+    - if gon.current_user_id && (gon.current_user_id == @answer.question.author.id) && !@answer.is_the_best
+      a data-remote="true" rel="nofollow" data-method="put" href="#{@answer.path}/best"
+        = 'Best'
+    - if gon.current_user_id && (gon.current_user_id == @answer.author.id)
+      a class="edit-answer-link" data-answer-id="#{@answer.id}" href="#"
+        = 'Edit'
+      a data-confirm="Are you sure?" data-remote="true" rel="nofollow" data-method="delete" href="#{@answer.path}"
+        = 'Delete'
+    - if gon.current_user_id && (gon.current_user_id != @answer.author.id)
+      a href="#{@answer.path}/comments/new"
+        = 'Comment'
+
+  .comments
+
+br
