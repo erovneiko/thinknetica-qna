@@ -12,11 +12,10 @@ class CommentsController < ApplicationController
     @comment.author = current_user
 
     if @comment.save
-      case @commentable.class.name
-      when 'Question'
-        redirect_to questions_path
-      when 'Answer'
+      if @commentable.instance_of?(Answer)
         redirect_to question_path(@commentable.question)
+      else
+        redirect_to questions_path
       end
     else
       render :new, status: :unprocessable_entity
@@ -28,7 +27,13 @@ class CommentsController < ApplicationController
   def publish_comment
     return if @comment.errors.any?
 
-    CommentsChannel.broadcast_to @comment.commentable, {
+    channel = if @commentable.instance_of?(Answer)
+                "questions/#{@commentable.question.id}/comments"
+              else
+                'questions/comments'
+              end
+
+    ActionCable.server.broadcast channel, {
       action: action_name,
       id: @comment.id,
       body: @comment.body,
