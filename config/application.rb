@@ -35,6 +35,8 @@ module Qna
     # Don't generate system test files.
     config.generators.system_tests = nil
 
+    # config.autoload_paths << "#{config.root}/app/services"
+
     config.generators do |g|
       g.test_framework :rspec,
                        view_specs: false,

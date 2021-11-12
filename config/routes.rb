@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
-  devise_for :users
+  devise_for :users, controllers: { omniauth_callbacks: 'oauth_callbacks' }
+  as :user do
+    post 'user/enter_email', to: 'oauth_callbacks#enter_email'
+  end
 
   concern :votable do
     member do

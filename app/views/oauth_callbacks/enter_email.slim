@@ -1,0 +1,5 @@
+= form_with url: user_enter_email_path do |f|
+  p= f.label :email, 'Email:'
+  p= f.email_field :email, autofocus: true
+  br
+  p= f.submit
