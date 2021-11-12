@@ -40,6 +40,11 @@ gem 'validate_url'
 gem 'active_storage_validations'
 gem 'skim'
 gem 'gon'
+gem 'omniauth'
+gem 'omniauth-rails_csrf_protection'
+gem 'omniauth-github'
+gem 'omniauth-mail_ru'
+gem 'omniauth-vkontakte'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -57,10 +62,12 @@ group :development do
   # gem 'rack-mini-profiler', '~> 2.0'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
+  gem 'letter_opener'
 end
 
 group :test do
   gem 'capybara', '>= 2.15'
+  gem 'capybara-email'
   gem 'launchy'
   gem 'rails-controller-testing'
   gem 'shoulda-matchers', '~> 4.5.1'
