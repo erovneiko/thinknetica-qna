@@ -46,18 +46,13 @@ class CommentsController < ApplicationController
   end
 
   def load_comment
-    commentable = if params[:question_id]
-                    Question.find(params[:question_id])
-                  elsif params[:answer_id]
-                    Answer.find(params[:answer_id])
-                  end
-    case action_name
-    when 'new'
-      @comment = Comment.new
-      @comment.commentable = commentable
-    when 'create'
-      @comment = commentable.comments.new(comment_params)
-    end
+    @commentable = if params[:question_id]
+                     Question.find(params[:question_id])
+                   elsif params[:answer_id]
+                     Answer.find(params[:answer_id])
+                   end
+    params = action_name == 'create' ? comment_params : nil
+    @comment = @commentable.comments.new(params)
   end
 
   def check_commentable_author
