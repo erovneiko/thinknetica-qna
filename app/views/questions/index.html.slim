@@ -3,9 +3,11 @@
 .questions
   = render @questions
 p
-  - if user_signed_in?
+  - if can?(:create, Question)
     = link_to 'Ask', new_question_path
+  - if can?(:index, Award)
     = link_to 'Awards', awards_path
+  - if user_signed_in?
     = link_to 'Exit', destroy_user_session_path, method: :delete
   - else
     = link_to 'Login', new_user_session_path

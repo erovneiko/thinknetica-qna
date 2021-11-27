@@ -1,14 +1,13 @@
 class CommentsController < ApplicationController
-  before_action :find_commentable, only: [:new, :create]
-  before_action :check_commentable_author, only: [:new, :create]
+  before_action :load_comment, only: [:new, :create]
   after_action :publish_comment, only: [:create]
 
+  authorize_resource
+
   def new
-    @comment = Comment.new
   end
 
   def create
-    @comment = @commentable.comments.new(comment_params)
     @comment.author = current_user
 
     if @comment.save
@@ -23,7 +22,7 @@ class CommentsController < ApplicationController
   end
 
   private
-
+  
   def publish_comment
     return if @comment.errors.any?
 
@@ -45,16 +44,18 @@ class CommentsController < ApplicationController
     }
   end
 
-  def find_commentable
-    if params[:question_id]
-      @commentable = Question.find(params[:question_id])
-    elsif params[:answer_id]
-      @commentable = Answer.find(params[:answer_id])
+  def load_comment
+    @commentable = if params[:question_id]
+                     Question.find(params[:question_id])
+                   elsif params[:answer_id]
+                     Answer.find(params[:answer_id])
+                   end
+    case action_name.to_sym
+    when :new
+      @comment = @commentable.comments.new()
+    when :create
+      @comment = @commentable.comments.new(comment_params)
     end
-  end
-
-  def check_commentable_author
-    head(:forbidden) if current_user.author_of?(@commentable)
   end
 
   def comment_params

@@ -100,9 +100,10 @@ RSpec.describe AnswersController, type: :controller do
         expect(answer.body).to eq 'Answer body'
       end
 
-      it 'returns status forbidden' do
-        expect(response).to have_http_status(:forbidden)
-      end      
+      it 'returns authorization error' do
+        expect(response).to redirect_to root_path
+        expect(flash[:alert]).to eq 'You are not authorized to access this page.'
+      end
     end
   end
 
@@ -130,9 +131,10 @@ RSpec.describe AnswersController, type: :controller do
           expect { delete :destroy, params: { id: answer } }.to_not change(question.answers, :count)
         end
 
-        it 'returns status forbidden' do
+        it 'returns authorization error' do
           delete :destroy, params: { id: answer }
-          expect(response).to have_http_status(:forbidden)
+          expect(response).to redirect_to root_path
+          expect(flash[:alert]).to eq 'You are not authorized to access this page.'
         end
       end
     end
@@ -172,15 +174,16 @@ RSpec.describe AnswersController, type: :controller do
 
       context 'not author' do
         before { login(user2) }
-        before { post :best, params: { id: answer }, format: :js }
+        before { put :best, params: { id: answer }, format: :js }
 
         it 'does not make answer the best' do
           question.reload
           expect(question.best_answer).to eq nil
         end
 
-        it 'returns status forbidden' do
-          expect(response).to have_http_status(:forbidden)
+        it 'returns authorization error' do
+          expect(response).to redirect_to root_path
+          expect(flash[:alert]).to eq 'You are not authorized to access this page.'
         end
       end
     end

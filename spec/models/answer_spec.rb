@@ -16,12 +16,12 @@ RSpec.describe Answer, type: :model do
     let(:answer) { create(:answer, question: question, author: user) }
 
     it 'makes answer the best' do
-      answer.is_the_best
+      answer.is_the_best!
       expect(question.best_answer).to eq answer
     end
 
     it 'checks if answer the best' do
-      answer.is_the_best
+      answer.is_the_best!
       expect(answer.is_the_best?).to eq true
     end
   end

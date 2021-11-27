@@ -23,7 +23,6 @@ feature 'User can delete question' do
       visit questions_path
 
       expect(page).to have_content 'Question title'
-      expect(page).to have_content 'Question body'
 
       expect(page).not_to have_link 'Delete'
     end
