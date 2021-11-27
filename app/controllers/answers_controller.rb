@@ -5,6 +5,8 @@ class AnswersController < ApplicationController
   before_action :find_question, only: [:create]
   after_action :publish_answer, only: [:create]
 
+  authorize_resource
+
   def create
     @answer = @question.answers.new(answer_params)
     @answer.author = current_user
