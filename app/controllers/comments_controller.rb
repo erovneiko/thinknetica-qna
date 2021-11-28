@@ -1,6 +1,5 @@
 class CommentsController < ApplicationController
   before_action :load_comment, only: [:new, :create]
-  # before_action :check_commentable_author, only: [:new, :create]
   after_action :publish_comment, only: [:create]
 
   authorize_resource
@@ -53,10 +52,6 @@ class CommentsController < ApplicationController
                    end
     params = action_name == 'create' ? comment_params : nil
     @comment = @commentable.comments.new(params)
-  end
-
-  def check_commentable_author
-    head(:forbidden) if current_user.author_of?(@commentable)
   end
 
   def comment_params

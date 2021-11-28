@@ -7,21 +7,22 @@ div id="answer-#{answer.id}"
   = render 'shared/links', resource: answer
   p= answer.author.email
 
-  = form_with model: answer, local: false, class: 'hidden', html: { id: "edit-answer-#{answer.id}" } do |f|
-    p= f.text_area :body
-    p= f.file_field :files, multiple: true, direct_upload: true
-    = render 'shared/links_form', f: f
-    p= f.submit
+  - if can? :update, answer
+    = form_with model: answer, local: false, class: 'hidden', html: { id: "edit-answer-#{answer.id}" } do |f|
+      p= f.text_area :body
+      p= f.file_field :files, multiple: true, direct_upload: true
+      = render 'shared/links_form', f: f
+      p= f.submit
 
   = render 'shared/votes', resource: answer
-
   p
-    - if current_user&.author_of?(answer.question) && !answer.is_the_best?
+    - if can?(:best, answer) && !answer.is_the_best?
       = link_to 'Best', best_answer_path(answer), method: :put, remote: true
-    - if current_user&.author_of?(answer)
+    - if can? :update, answer
       = link_to 'Edit', '#', class: 'edit-answer-link', data: { answer_id: answer.id }
+    - if can? :destroy, answer
       = link_to 'Delete', answer_path(answer), method: :delete, data: { confirm: 'Are you sure?' }, remote: true
-    - if user_signed_in? & !current_user&.author_of?(answer)
+    - if can? :create, Comment.new(commentable: answer)
       = link_to 'Comment', new_answer_comment_path(answer)
 
   .comments

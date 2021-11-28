@@ -2,7 +2,6 @@ class QuestionsController < ApplicationController
   include Voted
   skip_before_action :authenticate_user!, only: [:index, :show]
   before_action :load_question, only: [:show, :update, :destroy]
-  before_action :check_author, only: [:destroy, :update]
   after_action :publish_question, only: [:create]
 
   authorize_resource
@@ -82,10 +81,6 @@ class QuestionsController < ApplicationController
   def load_question
     @question = Question.with_attached_files.find(params[:id])
     gon.question_id = @question.id
-  end
-
-  def check_author
-    head(:forbidden) unless current_user.author_of?(@question)
   end
 
   def question_params

@@ -1,5 +1,5 @@
 p class="votes"
-  - if user_signed_in? and !current_user&.author_of?(resource)
+  - if can? :vote, resource
     = link_to octicon("thumbsup", height: 16, class: 'up'),
               polymorphic_path(resource, action: :vote_up),
               class: 'vote-up-link', method: :put, remote: true, data: { type: :json }
