@@ -23,6 +23,7 @@ class AnswersController < ApplicationController
   end
 
   def best
+    authorize! :best, @answer
     @answer.is_the_best!
     render :update
   end

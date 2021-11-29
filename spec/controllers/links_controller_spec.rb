@@ -36,7 +36,7 @@ RSpec.describe LinksController, type: :controller do
           end.not_to change(question.links, :count)
         end
 
-        it 'returns status forbidden' do
+        it 'returns authorization error' do
           delete :destroy, params: { id: question.links.first.id }, format: :js
           expect(response).to redirect_to root_path
           expect(flash[:alert]).to eq 'You are not authorized to access this page.'
