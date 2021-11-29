@@ -50,8 +50,12 @@ class CommentsController < ApplicationController
                    elsif params[:answer_id]
                      Answer.find(params[:answer_id])
                    end
-    params = action_name == 'create' ? comment_params : nil
-    @comment = @commentable.comments.new(params)
+    case action_name.to_sym
+    when :new
+      @comment = @commentable.comments.new()
+    when :create
+      @comment = @commentable.comments.new(comment_params)
+    end
   end
 
   def comment_params

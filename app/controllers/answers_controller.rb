@@ -1,15 +1,11 @@
 class AnswersController < ApplicationController
   include Voted
-  before_action :load_answer, only: [:create]
-  before_action :find_answer, only: [:destroy, :update, :best]
-  # before_action :find_question, only: [:create]
+  before_action :load_answer
   after_action :publish_answer, only: [:create]
 
-  # authorize_resource
+  authorize_resource
 
   def create
-    # @answer = @question.answers.new(answer_params)
-    # @answer.author = current_user
     @answer.save
   end
 
@@ -27,8 +23,6 @@ class AnswersController < ApplicationController
   end
 
   def best
-    return head(:forbidden) unless current_user.author_of?(@question)
-
     @answer.is_the_best!
     render :update
   end
@@ -71,18 +65,15 @@ class AnswersController < ApplicationController
   end
 
   def load_answer
-    @question = Question.with_attached_files.find(params[:question_id])
-    @answer = @question.answers.new(answer_params)
-    @answer.author = current_user
-  end
-
-  def find_answer
-    @answer = Answer.with_attached_files.find(params[:id])
-    @question = @answer.question
-  end
-
-  def find_question
-    @question = Question.with_attached_files.find(params[:question_id])
+    case action_name.to_sym
+    when :create
+      @question = Question.with_attached_files.find(params[:question_id])
+      @answer = @question.answers.new(answer_params)
+      @answer.author = current_user
+    when :destroy, :update, :best
+      @answer = Answer.with_attached_files.find(params[:id])
+      @question = @answer.question
+    end
   end
 
   def answer_params

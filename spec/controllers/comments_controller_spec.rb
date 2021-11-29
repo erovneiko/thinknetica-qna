@@ -11,7 +11,8 @@ RSpec.describe CommentsController, type: :controller do
         before { get :new, params: { question_id: question.id } }
 
         it 'returns status forbidden' do
-          expect(response).to have_http_status(:forbidden)
+          expect(response).to redirect_to root_path
+          expect(flash[:alert]).to eq 'You are not authorized to access this page.'
         end
       end
 
@@ -59,7 +60,8 @@ RSpec.describe CommentsController, type: :controller do
         end
 
         it 'returns status forbidden' do
-          expect(response).to have_http_status(:forbidden)
+          expect(response).to redirect_to root_path
+          expect(flash[:alert]).to eq 'You are not authorized to access this page.'
         end
       end
 

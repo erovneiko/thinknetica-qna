@@ -169,7 +169,8 @@ RSpec.describe QuestionsController, type: :controller do
       end
 
       it 'returns status forbidden' do
-        expect(response).to have_http_status(:forbidden)
+        expect(response).to redirect_to root_path
+        expect(flash[:alert]).to eq 'You are not authorized to access this page.'
       end
     end
   end
@@ -201,7 +202,8 @@ RSpec.describe QuestionsController, type: :controller do
 
         it 'returns status forbidden' do
           delete :destroy, params: { id: question }
-          expect(response).to have_http_status(:forbidden)
+          expect(response).to redirect_to root_path
+          expect(flash[:alert]).to eq 'You are not authorized to access this page.'
         end
       end
     end
