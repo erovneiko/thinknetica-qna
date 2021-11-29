@@ -1,14 +1,15 @@
 class AnswersController < ApplicationController
   include Voted
+  before_action :load_answer, only: [:create]
   before_action :find_answer, only: [:destroy, :update, :best]
-  before_action :find_question, only: [:create]
+  # before_action :find_question, only: [:create]
   after_action :publish_answer, only: [:create]
 
-  authorize_resource
+  # authorize_resource
 
   def create
-    @answer = @question.answers.new(answer_params)
-    @answer.author = current_user
+    # @answer = @question.answers.new(answer_params)
+    # @answer.author = current_user
     @answer.save
   end
 
@@ -67,6 +68,12 @@ class AnswersController < ApplicationController
       path: "/answers/#{@answer.id}",
       name: 'answer'
     }
+  end
+
+  def load_answer
+    @question = Question.with_attached_files.find(params[:question_id])
+    @answer = @question.answers.new(answer_params)
+    @answer.author = current_user
   end
 
   def find_answer
