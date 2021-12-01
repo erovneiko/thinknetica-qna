@@ -1,7 +1,9 @@
 class AnswersController < ApplicationController
   include Voted
-  before_action :load_answer
-  after_action :publish_answer, only: [:create]
+  before_action :load_answer, only: %i[destroy update best]
+  before_action :load_question, only: %i[destroy update best]
+  before_action :load_on_create, only: :create
+  after_action :publish_answer, only: :create
 
   authorize_resource
 
@@ -66,15 +68,17 @@ class AnswersController < ApplicationController
   end
 
   def load_answer
-    case action_name.to_sym
-    when :create
-      @question = Question.with_attached_files.find(params[:question_id])
-      @answer = @question.answers.new(answer_params)
-      @answer.author = current_user
-    when :destroy, :update, :best
-      @answer = Answer.with_attached_files.find(params[:id])
-      @question = @answer.question
-    end
+    @answer = Answer.with_attached_files.find(params[:id])
+  end
+
+  def load_question
+    @question = @answer.question
+  end
+
+  def load_on_create
+    @question = Question.with_attached_files.find(params[:question_id])
+    @answer = @question.answers.new(answer_params)
+    @answer.author = current_user
   end
 
   def answer_params

@@ -1,6 +1,8 @@
 class CommentsController < ApplicationController
-  before_action :load_comment, only: [:new, :create]
-  after_action :publish_comment, only: [:create]
+  before_action :load_commentable, only: %i[new create]
+  before_action :load_comment_on_new, only: :new
+  before_action :load_comment_on_create, only: :create
+  after_action :publish_comment, only: :create
 
   authorize_resource
 
@@ -44,20 +46,22 @@ class CommentsController < ApplicationController
     }
   end
 
-  def load_comment
+  def load_commentable
     @commentable = if params[:question_id]
                      Question.find(params[:question_id])
                    elsif params[:answer_id]
                      Answer.find(params[:answer_id])
                    end
-    case action_name.to_sym
-    when :new
-      @comment = @commentable.comments.new()
-    when :create
-      @comment = @commentable.comments.new(comment_params)
-    end
   end
 
+  def load_comment_on_new
+    @comment = @commentable.comments.new
+  end
+
+  def load_comment_on_create
+    @comment = @commentable.comments.new(comment_params)
+  end
+  
   def comment_params
     params.require(:comment).permit(:body)
   end

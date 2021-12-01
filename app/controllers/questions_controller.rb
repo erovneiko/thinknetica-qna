@@ -1,7 +1,9 @@
 class QuestionsController < ApplicationController
   include Voted
   skip_before_action :authenticate_user!, only: [:index, :show]
-  before_action :load_question
+  before_action :load_question, only: %i[show update destroy]
+  before_action :load_question_on_new, only: :new
+  before_action :load_question_on_create, only: :create
   after_action :publish_question, only: [:create]
 
   authorize_resource
@@ -75,17 +77,18 @@ class QuestionsController < ApplicationController
   end
 
   def load_question
-    case action_name.to_sym
-    when :new
-      @question = Question.new
-      @question.author = current_user
-    when :create
-      @question = Question.new(question_params)
-      @question.author = current_user
-    when :show, :update, :destroy
-      @question = Question.with_attached_files.find(params[:id])
-      gon.question_id = @question.id
-    end
+    @question = Question.with_attached_files.find(params[:id])
+    gon.question_id = @question.id
+  end
+
+  def load_question_on_new
+    @question = Question.new
+    @question.author = current_user
+  end
+
+  def load_question_on_create
+    @question = Question.new(question_params)
+    @question.author = current_user
   end
 
   def question_params

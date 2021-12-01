@@ -100,9 +100,8 @@ RSpec.describe AnswersController, type: :controller do
         expect(answer.body).to eq 'Answer body'
       end
 
-      it 'returns authorization error' do
-        expect(response).to redirect_to root_path
-        expect(flash[:alert]).to eq 'You are not authorized to access this page.'
+      it 'returns status forbidden' do
+        expect(response).to have_http_status(:forbidden)
       end
     end
   end
@@ -181,9 +180,8 @@ RSpec.describe AnswersController, type: :controller do
           expect(question.best_answer).to eq nil
         end
 
-        it 'returns authorization error' do
-          expect(response).to redirect_to root_path
-          expect(flash[:alert]).to eq 'You are not authorized to access this page.'
+        it 'returns status forbidden' do
+          expect(response).to have_http_status(:forbidden)
         end
       end
     end

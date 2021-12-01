@@ -69,18 +69,16 @@ shared_examples 'Voted' do
     before { login(user1) }
 
     context 'PUT #vote_up' do
-      it 'returns authorization error' do
+      it 'returns status forbidden' do
         put :vote_up, params: { id: votable }, format: :js
-        expect(response).to redirect_to root_path
-        expect(flash[:alert]).to eq 'You are not authorized to access this page.'
+        expect(response).to have_http_status(:forbidden)
       end
     end
 
     context 'PUT #vote_down' do
-      it 'returns authorization error' do
+      it 'returns status forbidden' do
         put :vote_down, params: { id: votable }, format: :js
-        expect(response).to redirect_to root_path
-        expect(flash[:alert]).to eq 'You are not authorized to access this page.'
+        expect(response).to have_http_status(:forbidden)
       end
     end
   end
