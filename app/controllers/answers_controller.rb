@@ -1,13 +1,17 @@
 class AnswersController < ApplicationController
   include Voted
   before_action :load_answer, only: %i[destroy update best]
-  before_action :load_question, only: %i[destroy update best]
-  before_action :load_on_create, only: :create
   after_action :publish_answer, only: :create
 
   authorize_resource
 
   def create
+    @question = Question.find(params[:question_id])
+    @answer = @question.answers.new(answer_params)
+    @answer.author = current_user
+
+    authorize! :create, @answer
+
     @answer.save
   end
 
@@ -69,16 +73,7 @@ class AnswersController < ApplicationController
 
   def load_answer
     @answer = Answer.with_attached_files.find(params[:id])
-  end
-
-  def load_question
     @question = @answer.question
-  end
-
-  def load_on_create
-    @question = Question.with_attached_files.find(params[:question_id])
-    @answer = @question.answers.new(answer_params)
-    @answer.author = current_user
   end
 
   def answer_params

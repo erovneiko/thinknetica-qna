@@ -1,16 +1,19 @@
 class CommentsController < ApplicationController
   before_action :load_commentable, only: %i[new create]
-  before_action :load_comment_on_new, only: :new
-  before_action :load_comment_on_create, only: :create
   after_action :publish_comment, only: :create
 
   authorize_resource
 
   def new
+    @comment = @commentable.comments.new
+    authorize! :create, @comment
   end
 
   def create
+    @comment = @commentable.comments.new(comment_params)
     @comment.author = current_user
+
+    authorize! :create, @comment
 
     if @comment.save
       if @commentable.instance_of?(Answer)
@@ -54,14 +57,6 @@ class CommentsController < ApplicationController
                    end
   end
 
-  def load_comment_on_new
-    @comment = @commentable.comments.new
-  end
-
-  def load_comment_on_create
-    @comment = @commentable.comments.new(comment_params)
-  end
-  
   def comment_params
     params.require(:comment).permit(:body)
   end

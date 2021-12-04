@@ -2,8 +2,6 @@ class QuestionsController < ApplicationController
   include Voted
   skip_before_action :authenticate_user!, only: [:index, :show]
   before_action :load_question, only: %i[show update destroy]
-  before_action :load_question_on_new, only: :new
-  before_action :load_question_on_create, only: :create
   after_action :publish_question, only: [:create]
 
   authorize_resource
@@ -20,11 +18,19 @@ class QuestionsController < ApplicationController
   end
 
   def new
+    @question = Question.new
+    @question.author = current_user
     @question.links.new
     @question.award = Award.new
+    authorize! :create, @question
   end
 
   def create
+    @question = Question.new(question_params)
+    @question.author = current_user
+
+    authorize! :create, @question
+
     if @question.save
       redirect_to questions_path, notice: 'Your question successfully created'
     else
@@ -79,16 +85,6 @@ class QuestionsController < ApplicationController
   def load_question
     @question = Question.with_attached_files.find(params[:id])
     gon.question_id = @question.id
-  end
-
-  def load_question_on_new
-    @question = Question.new
-    @question.author = current_user
-  end
-
-  def load_question_on_create
-    @question = Question.new(question_params)
-    @question.author = current_user
   end
 
   def question_params
