@@ -1,0 +1,9 @@
+GET http://localhost:3000/api/v1/answers/19?access_token={{access_token}}
+Accept: application/json
+
+###
+
+GET http://localhost:3000/api/v1/answers/166?access_token={{access_token}}
+Accept: application/json
+
+###

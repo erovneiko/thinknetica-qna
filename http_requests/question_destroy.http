@@ -1,0 +1,4 @@
+DELETE http://localhost:3000/api/v1/questions/11?access_token={{access_token}}
+Accept: application/json
+
+###
