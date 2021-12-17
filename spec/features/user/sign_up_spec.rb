@@ -10,7 +10,7 @@ feature 'User can sign up' do
 
     click_on 'Sign up'
 
-    expect(page).to have_content 'You have signed up successfully.'
+    expect(page.text).to match /A message with a confirmation link has been sent to your email/
   end
 
   scenario 'Already existed user tries to sign up' do

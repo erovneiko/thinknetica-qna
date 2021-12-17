@@ -13,7 +13,7 @@ class Answer < ApplicationRecord
 
   validates :body, presence: true
 
-  def is_the_best
+  def is_the_best!
     question.update(best_answer: self)
   end
 

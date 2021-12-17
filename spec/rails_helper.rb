@@ -85,3 +85,4 @@ Shoulda::Matchers.configure do |config|
 end
 
 require 'validate_url/rspec_matcher'
+require 'cancan/matchers'

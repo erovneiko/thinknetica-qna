@@ -2,6 +2,6 @@
   - resource.files.each do |file|
     p id = "file-#{file.id}"
       = link_to file.filename.to_s, url_for(file)
-      - if user_signed_in? & current_user&.author_of?(resource)
+      - if can? :destroy, file
         = link_to octicon("x", height: 16, class: 'delete'), file_path(file.id),
                   id: "delete-file-#{file.id}", method: :delete, remote: true
