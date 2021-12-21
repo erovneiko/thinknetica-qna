@@ -35,9 +35,8 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      resources :profiles, only: [] do
+      resources :profiles, only: [:index] do
         get :me, on: :collection
-        get :all, on: :collection
       end
       resources :questions, except: %i[new edit] do
         resources :answers, shallow: true, except: %i[index new edit]

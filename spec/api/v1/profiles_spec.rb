@@ -39,7 +39,7 @@ describe 'Profiles API', type: :request do
 
   describe 'GET /api/v1/profiles/all' do
     let(:method) { :get }
-    let(:api_path) { all_api_v1_profiles_path }
+    let(:api_path) { api_v1_profiles_path }
 
     it_behaves_like 'API Authorizable'
 
