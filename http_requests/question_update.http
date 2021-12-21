@@ -1,0 +1,12 @@
+PATCH http://localhost:3000/api/v1/questions/11?access_token={{access_token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "question": {
+    "title": "Question 4",
+    "body": "Question 4"
+  }
+}
+
+###

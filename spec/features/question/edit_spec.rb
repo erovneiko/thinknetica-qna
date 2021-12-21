@@ -63,6 +63,7 @@ feature 'Question can be edited' do
           click_link 'Show'
         end
 
+        sleep 0.5
         click_link id: "delete-link-#{question.links.first.id}"
         expect(page).not_to have_link 'google'
       end
