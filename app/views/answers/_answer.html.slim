@@ -14,7 +14,8 @@ div id="answer-#{answer.id}"
       = render 'shared/links_form', f: f
       p= f.submit
 
-  = render 'shared/votes', resource: answer
+  p.bar
+    = render 'shared/votes', resource: answer
   p
     - if can?(:best, answer) && !answer.is_the_best?
       = link_to 'Best', best_answer_path(answer), method: :put, remote: true

@@ -24,6 +24,15 @@ RSpec.describe AnswersController, type: :controller do
           post :create, params: { question_id: question, answer: attributes_for(:answer) }, format: :js
           expect(response).to render_template :create
         end
+
+        context 'notification' do
+          before { question.subscribers << user2 }
+
+          it 'sends notification to subscribers' do
+            expect(NotificationsMailer).to receive(:new_answer).and_call_original
+            post :create, params: { question_id: question, answer: attributes_for(:answer) }, format: :js
+          end
+        end
       end
 
       context 'invalid attributes' do

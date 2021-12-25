@@ -6,6 +6,8 @@ RSpec.describe Question, type: :model do
     it { should have_many(:links).dependent(:destroy) }
     it { should have_one(:award).dependent(:destroy).optional }
     it { should have_many(:votes).dependent(:destroy) }
+    it { should have_many(:subscriptions).dependent(:destroy) }
+    it { should have_many(:subscribers) }
   end
 
   describe 'validations' do

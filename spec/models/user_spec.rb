@@ -6,6 +6,7 @@ RSpec.describe User, type: :model do
     it { should have_many(:questions).with_foreign_key('author_id').dependent(:destroy) }
     it { should have_many(:votes) }
     it { should have_many(:authorizations).dependent(:destroy) }
+    it { should have_many(:subscriptions).dependent(:destroy) }
   end
 
   describe 'validations' do

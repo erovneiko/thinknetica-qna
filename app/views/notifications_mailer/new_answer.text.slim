@@ -1,0 +1,10 @@
+|New answer created:
+= "\r\n" * 2
+= @answer.body
+= "\r\n" * 2
+|For the question you subscribed:
+= "\r\n" * 2
+= @answer.question.title
+= "\r\n" * 2
+= question_url(@answer.question)
+
