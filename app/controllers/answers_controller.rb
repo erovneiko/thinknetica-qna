@@ -2,6 +2,7 @@ class AnswersController < ApplicationController
   include Voted
   before_action :load_answer, only: %i[destroy update best]
   after_action :publish_answer, only: :create
+  after_action :notify_subsribers, only: :create
 
   authorize_resource
 
@@ -35,6 +36,12 @@ class AnswersController < ApplicationController
   end
 
   private
+
+  def notify_subsribers
+    return if @answer.errors.any?
+
+
+  end
 
   def publish_answer
     return if @answer.errors.any?

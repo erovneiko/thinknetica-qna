@@ -1,3 +1,5 @@
+require 'daily_digest'
+
 class DailyDigestJob < ApplicationJob
   queue_as :default
 

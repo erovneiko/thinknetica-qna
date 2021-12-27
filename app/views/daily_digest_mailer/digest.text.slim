@@ -1,3 +1,6 @@
 ' DailyDigest#digest
 = "\r\n" * 2
-' #{@greeting + ", find me in app/views/daily_digest_mailer/digest.text.slim"}
+' Last day questions:
+= "\r\n" * 2
+- @questions.each.with_index(1) do |question, index|
+  = "#{index}. #{question.title}"
