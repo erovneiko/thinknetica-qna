@@ -42,7 +42,7 @@ input[type="file"] {
   margin-top: 4px;
 }
 
-p.votes {
+p.bar {
   margin-block-end: 0.7em;
   svg {
     fill: steelblue;
@@ -55,11 +55,14 @@ p.votes {
   }
   span.result {
     display: inline-block;
-    margin-top: 2px;
-    margin-left: 1px;
+    margin: 2px 12px 0px 1px;
     padding: 2px 9px 1px 8px;
     background-color: #d6e2f5;
     font-size: small;
+  }
+  svg.bell {
+    fill: steelblue;
+    margin-top: 4px;
   }
 }
 

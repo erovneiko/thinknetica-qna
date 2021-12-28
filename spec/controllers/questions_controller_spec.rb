@@ -225,4 +225,22 @@ RSpec.describe QuestionsController, type: :controller do
     let(:votable) { question }
     it_behaves_like 'Voted'
   end
+
+  describe 'Subscriptions' do
+    before { login(user1) }
+
+    describe 'PUT #subscribe' do
+      it 'creates subscription' do
+        expect { put :subscribe, params: { id: question } }.to change(Subscription, :count).by(1)
+      end
+    end
+
+    describe 'PUT #unsubscribe' do
+      before { question.subscribers << user1 }
+
+      it 'deletes subscription' do
+        expect { put :unsubscribe, params: { id: question } }.to change(Subscription, :count).by(-1)
+      end
+    end
+  end
 end

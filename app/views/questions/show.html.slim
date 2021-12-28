@@ -6,7 +6,8 @@
   = render 'shared/files', resource: @question
   = render 'shared/links', resource: @question
   p= @question.author.email
-  = render 'shared/votes', resource: @question
+  p.bar
+    = render 'shared/votes', resource: @question
 br
 
 .answers

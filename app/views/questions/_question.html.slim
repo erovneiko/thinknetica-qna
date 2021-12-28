@@ -11,7 +11,13 @@ div id="question-#{question.id}"
       = render 'shared/links_form', f: f
       p= f.submit
 
-  = render 'shared/votes', resource: question
+  p.bar
+    = render 'shared/votes', resource: question
+    - if user_signed_in?
+      - unless current_user.subscribed?(question)
+        = link_to octicon("bell", height: 16, class: 'bell'), polymorphic_path(question, action: :subscribe), method: :put
+      - else
+        = link_to octicon("bell-fill", height: 16, class: 'bell'), polymorphic_path(question, action: :unsubscribe), method: :put
   p
     = link_to 'Show', question_path(question)
     - if can? :update, question

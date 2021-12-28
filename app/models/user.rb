@@ -14,6 +14,7 @@ class User < ApplicationRecord
   has_many :answers, foreign_key: 'author_id', dependent: :destroy
   has_many :votes
   has_many :authorizations, dependent: :destroy
+  has_many :subscriptions, dependent: :destroy
 
   def author_of?(object)
     id == object.author_id
@@ -25,5 +26,9 @@ class User < ApplicationRecord
 
   def create_authorization(auth)
     self.authorizations.create(provider: auth.provider, uid: auth.uid)
+  end
+
+  def subscribed?(object)
+    subscriptions.any? { |s| s.subscriptable_type == object.class.name && s.subscriptable_id == object.id }
   end
 end
