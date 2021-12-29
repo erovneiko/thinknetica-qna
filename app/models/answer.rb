@@ -13,11 +13,23 @@ class Answer < ApplicationRecord
 
   validates :body, presence: true
 
+  after_create :after_create_callback
+
   def is_the_best!
     question.update(best_answer: self)
   end
 
   def is_the_best?
     question.best_answer&.id == id
+  end
+
+  private
+
+  def after_create_callback
+    return if self.errors.any?
+
+    question.subscribers.each do |s|
+      NotificationsMailer.new_answer(s, self).deliver_later
+    end
   end
 end

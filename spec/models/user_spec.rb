@@ -39,4 +39,14 @@ RSpec.describe User, type: :model do
       User.find_for_oauth(auth)
     end
   end
+
+  describe 'subscribed?' do
+    it 'object is subscribed'
+    it 'object is not subscribed'
+  end
+
+  describe 'subscription' do
+    it 'finds subscription to the object'
+    it 'does not find subscription to the object'
+  end
 end

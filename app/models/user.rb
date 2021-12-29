@@ -29,6 +29,10 @@ class User < ApplicationRecord
   end
 
   def subscribed?(object)
-    subscriptions.any? { |s| s.subscriptable_type == object.class.name && s.subscriptable_id == object.id }
+    subscriptions.exists?(subscriptable: object)
+  end
+
+  def subscription(object)
+    subscriptions.where(subscriptable: object).first
   end
 end

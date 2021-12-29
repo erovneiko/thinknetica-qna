@@ -1,22 +1,10 @@
 class QuestionsController < ApplicationController
   include Voted
   skip_before_action :authenticate_user!, only: [:index, :show]
-  before_action :load_question, only: %i[show update destroy subscribe unsubscribe]
+  before_action :load_question, only: %i[show update destroy]
   after_action :publish_question, only: [:create]
 
   authorize_resource
-
-  def subscribe
-    @question.subscribers << current_user
-    @questions = Question.all
-    render :index
-  end
-
-  def unsubscribe
-    @question.subscribers.delete(current_user)
-    @questions = Question.all
-    render :index
-  end
 
   def index
     @questions = Question.all

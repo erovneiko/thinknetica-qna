@@ -25,17 +25,11 @@ Rails.application.routes.draw do
     resources :comments, only: %i[new create]
   end
 
-  concern :subscriptable do
-    member do
-      put :subscribe
-      put :unsubscribe
-    end
-  end
-
-  resources :questions, except: :edit, concerns: %i[votable commentable subscriptable] do
+  resources :questions, except: :edit, concerns: %i[votable commentable] do
     resources :answers, shallow: true, concerns: %i[votable commentable] do
       put :best, on: :member
     end
+    resources :subscriptions, shallow: true, only: %i[create destroy]
   end
 
   resources :files, only: :destroy
