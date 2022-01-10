@@ -16,6 +16,9 @@ class Question < ApplicationRecord
 
   has_many :comments, dependent: :destroy, as: :commentable
 
+  has_many :subscriptions, as: :subscriptable, dependent: :destroy
+  has_many :subscribers, through: :subscriptions, source: :user
+
   default_scope { order(:title) }
 
   validates :title, :body, presence: true

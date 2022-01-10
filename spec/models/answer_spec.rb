@@ -33,4 +33,10 @@ RSpec.describe Answer, type: :model do
 
     it { should accept_nested_attributes_for :links }
   end
+
+  describe 'callbacks' do
+    describe 'after_create_callback' do
+      it 'sends notification to question subscribers'
+    end
+  end
 end

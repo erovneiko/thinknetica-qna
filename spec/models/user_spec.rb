@@ -6,6 +6,7 @@ RSpec.describe User, type: :model do
     it { should have_many(:questions).with_foreign_key('author_id').dependent(:destroy) }
     it { should have_many(:votes) }
     it { should have_many(:authorizations).dependent(:destroy) }
+    it { should have_many(:subscriptions).dependent(:destroy) }
   end
 
   describe 'validations' do
@@ -37,5 +38,15 @@ RSpec.describe User, type: :model do
       expect(service).to receive(:call)
       User.find_for_oauth(auth)
     end
+  end
+
+  describe 'subscribed?' do
+    it 'object is subscribed'
+    it 'object is not subscribed'
+  end
+
+  describe 'subscription' do
+    it 'finds subscription to the object'
+    it 'does not find subscription to the object'
   end
 end

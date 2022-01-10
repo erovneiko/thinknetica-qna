@@ -1,0 +1,6 @@
+h3 New answer created:
+p= @answer.body
+h3 For the question you subscribed:
+p= @answer.question.title
+p= link_to 'Show', question_url(@answer.question)
+

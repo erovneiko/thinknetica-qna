@@ -28,6 +28,7 @@ class QuestionsController < ApplicationController
   def create
     @question = Question.new(question_params)
     @question.author = current_user
+    @question.subscribers << current_user
 
     authorize! :create, @question
 
