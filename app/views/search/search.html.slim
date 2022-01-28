@@ -1,0 +1,24 @@
+/ .search-form
+.search
+  = form_with url: search_path, method: :get do |f|
+    p
+      = f.text_field :query, value: params[:query], size: 30, autofocus: true
+      = f.submit "Search"
+    p
+      - SearchController::SCOPE.each do |scope|
+        = fields_for 'scope' do |ff|
+          - if !params[:scope] || params[:scope][scope]
+            = ff.check_box scope, include_hidden: false, checked: true
+          - else
+            = ff.check_box scope, include_hidden: false
+          = ff.label scope, scope.pluralize
+  .results
+    - if @results
+      - if @results != []
+        - @results.each do |result|
+          = render result.class.name.downcase, result: result
+      - else
+        p.not-found
+          |Nothing found
+  .footer
+    p= link_to 'Back', questions_path

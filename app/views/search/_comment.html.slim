@@ -1,0 +1,8 @@
+.result
+  - commentable = result.commentable
+  - case commentable
+  - when Question
+    p= link_to commentable.title, question_path(commentable)
+  - when Answer
+    p= link_to commentable.question.title, question_path(commentable.question)
+  p== result.excerpts.body
