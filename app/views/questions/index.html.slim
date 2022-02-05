@@ -5,6 +5,7 @@
 p
   - if can?(:create, Question)
     = link_to 'Ask', new_question_path
+  = link_to 'Search', search_path
   - if can?(:index, Award)
     = link_to 'Awards', awards_path
   - if user_signed_in?

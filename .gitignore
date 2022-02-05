@@ -36,3 +36,6 @@ yarn-debug.log*
 .yarn-integrity
 /http_requests/http-client.private.env.json
 /dump.rdb
+/config/*.sphinx.conf
+/db/sphinx
+

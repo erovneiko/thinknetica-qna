@@ -77,3 +77,26 @@ p.bar {
     margin-block-start: 0.4em;
   }
 }
+
+.search {
+  form,
+  .footer,
+  .results .not-found {
+    display: table;
+    margin: 0 auto;
+  }
+  input#query,
+  label {
+    margin-right: 4px;
+  }
+  .results {
+    span.match {
+      font-weight: bold;
+    }
+    .result,
+    .not-found {
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+  }
+}

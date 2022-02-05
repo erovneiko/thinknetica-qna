@@ -8,6 +8,10 @@
   p= @question.author.email
   p.bar
     = render 'shared/votes', resource: @question
+
+.comments
+  = render @question.comments
+
 br
 
 .answers
