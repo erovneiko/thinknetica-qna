@@ -34,9 +34,12 @@ require "capistrano/bundler"
 # require "capistrano/rails/migrations"
 require "capistrano/passenger"
 require 'capistrano/rails'
-require 'capistrano/sidekiq'
 require 'thinking_sphinx/capistrano'
 require 'whenever/capistrano'
+
+require 'capistrano/sidekiq'
+install_plugin Capistrano::Sidekiq  # Default sidekiq tasks
+install_plugin Capistrano::Sidekiq::Systemd
 
 # Load custom tasks from `lib/capistrano/tasks` if you have any defined
 Dir.glob("lib/capistrano/tasks/*.rake").each { |r| import r }
