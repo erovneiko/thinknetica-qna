@@ -75,6 +75,9 @@ Rails.application.configure do
   config.action_mailer.default_options = {
     from: 'erovneiko@mail.ru'
   }
+  config.action_mailer.default_url_options = {
+    host: '51.15.218.57'
+  }
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
