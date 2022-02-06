@@ -69,9 +69,7 @@ feature 'Comment creation' do
     end
 
     Capybara.using_session('guest') do
-      within '.comments' do
-        expect(page).to have_content 'Comment Body'
-      end
+      expect(page).to have_content 'Comment Body'
     end
   end
 end

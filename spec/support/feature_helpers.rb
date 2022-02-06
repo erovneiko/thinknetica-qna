@@ -13,8 +13,6 @@ module FeatureHelpers
 
     click_on 'Create Comment'
 
-    within '.comments' do
-      expect(page).to have_content 'Comment Body'
-    end
+    expect(page).to have_content 'Comment Body'
   end
 end

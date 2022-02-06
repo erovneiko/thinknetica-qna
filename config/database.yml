@@ -14,3 +14,10 @@ test:
   database: Qna_test
   username: <%= Rails.application.credentials[Rails.env.to_sym][:database][:username] %>
   password: <%= Rails.application.credentials[Rails.env.to_sym][:database][:password] %>
+
+production:
+  <<: *default
+  database: Qna_production
+  username: <%= Rails.application.credentials[Rails.env.to_sym][:database][:username] %>
+  password: <%= Rails.application.credentials[Rails.env.to_sym][:database][:password] %>
+  pool: 20
