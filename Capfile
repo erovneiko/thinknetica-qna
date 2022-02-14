@@ -32,10 +32,11 @@ require "capistrano/rvm"
 require "capistrano/bundler"
 # require "capistrano/rails/assets"
 # require "capistrano/rails/migrations"
-require "capistrano/passenger"
+# require "capistrano/passenger"
 require 'capistrano/rails'
 require 'thinking_sphinx/capistrano'
 require 'whenever/capistrano'
+require 'capistrano3/unicorn'
 
 require 'capistrano/sidekiq'
 install_plugin Capistrano::Sidekiq  # Default sidekiq tasks

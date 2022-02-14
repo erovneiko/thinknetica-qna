@@ -16,3 +16,5 @@ append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "public/syst
 
 #Sidekiq
 set :pty, false
+
+after 'deploy:publishing', 'unicorn:restart'
