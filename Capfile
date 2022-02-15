@@ -41,7 +41,7 @@ require 'capistrano3/unicorn'
 require 'capistrano/sidekiq'
 install_plugin Capistrano::Sidekiq  # Default sidekiq tasks
 install_plugin Capistrano::Sidekiq::Systemd
-install_plugin Capistrano::Sidekiq::Monit
+# install_plugin Capistrano::Sidekiq::Monit
 
 # Load custom tasks from `lib/capistrano/tasks` if you have any defined
 Dir.glob("lib/capistrano/tasks/*.rake").each { |r| import r }
