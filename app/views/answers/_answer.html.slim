@@ -1,8 +1,8 @@
 div id="answer-#{answer.id}"
-  - if answer.is_the_best?
-    = octicon "star-fill", height: 24, class: 'best'
-
-  p= answer.body
+  - cache answer do
+    - if answer.is_the_best?
+      = octicon "star-fill", height: 24, class: 'best'
+    p= answer.body
   = render 'shared/files', resource: answer
   = render 'shared/links', resource: answer
   p= answer.author.email
@@ -26,7 +26,7 @@ div id="answer-#{answer.id}"
     - if can? :create, Comment.new(commentable: answer)
       = link_to 'Comment', new_answer_comment_path(answer)
 
-  .comments
-    = render answer.comments
-
+  - cache [answer, 'comments'] do
+    .comments
+      = render answer.comments
 br
